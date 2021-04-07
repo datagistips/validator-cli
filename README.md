@@ -29,21 +29,6 @@ The mapping file, named above `data-mapping.csv` specifies the source fields and
 
 :two: Transform other data or pools of data programmatically using the mapping file with `validator-cli`
 
-	python validator-cli.py --help
-	usage: validator-cli.py [-h] [-i INPUT] [-d INPUTDIR] -m MAPPING [-o OUTPUT]
-	
-	optional arguments:
-	  -h, --help            show this help message and exit
-	  -i INPUT, --input INPUT
-	                        input file
-	  -d INPUTDIR, --inputdir INPUTDIR
-	                        input directory
-	  -m MAPPING, --mapping MAPPING
-	                        input mapping file path
-	  -o OUTPUT, --output OUTPUT
-	                        output file (if in single file mode, not directory
-	                        mode)
-
 For instance :
 
 	python validator-cli.py -i my_data.csv -m my_mapping_file.csv
