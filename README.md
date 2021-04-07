@@ -53,7 +53,7 @@ You can also transform a directory of data with `-d`. All the data files inside 
 
 ## Log outputs
 
-### Control outputs
+### `control` outputs
 	python validator-cli.py control data.csv standard.csv
 
 will produce :
@@ -73,7 +73,7 @@ will produce :
 	Schema columns present in data : id_site
 	Schema columns absent from data : date_maj, nb_sites, is_ok, libelle
 
-### Transform outputs
+### `transform` outputs
 	python validator-cli.py transform data.csv mapping.csv
 
 will produce :
