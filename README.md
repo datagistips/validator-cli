@@ -38,23 +38,28 @@ The mapping file, named in the above animation `data-mapping.csv` specifies the 
 :two: Transform your data with `transform`
 
 ### One file
-For instance, this line will transform `my_data.csv` into `my_data-mapped.csv`, using source-target fields specifications contained in `my_mapping_file.csv` file :
+For instance, this line will transform `my_data.csv` into `my_data-mapped.csv`, using source-target fields specifications contained in `mapping.csv` file :
 
-	python validator-cli.py transform data.csv -m mapping_file.csv
+	python validator-cli.py transform data.csv -m mapping.csv
 
 ### One directory
 You can also transform a directory of data with `-d`. All the data files inside the directory, which respect the structure, will be transformed : 
 
-	python validator-cli.py transform -d my_dir -m mapping_file.csv
+	python validator-cli.py transform -d my_dir -m mapping.csv
 
 > Notice only data with the right structure will be transformed
 
 ## Example outputs
 You can redirect print messages to a log file like this :
 
-	python validator-cli.py control data.csv standard.csv > my_log.txt
+	python validator-cli.py control data.csv standard.csv > log.txt
 
 ### Control outputs
+	python validator-cli.py control data.csv standard.csv
+
+will produce :
+
+	07/04/2021 19:05:23
 	[KO] Data non valid
 	
 	Input data : data.csv
@@ -70,7 +75,12 @@ You can redirect print messages to a log file like this :
 	Schema columns absent from data : date_maj, nb_sites, is_ok, libelle
 
 ### Transform outputs
-	Input data : examples\data.csv
+	python validator-cli.py transform data.csv mapping.csv
+
+will produce :
+
+	07/04/2021 19:05:23
+	Input data : data.csv
 	   fid  id        lib        date                heure     ok  id_site
 	0    1  11   à la mer  2021/03/02                  NaN   vrai      100
 	1    2  10  printemps  2021/03/09  2021/03/09 00:00:00  false      100
@@ -79,7 +89,7 @@ You can redirect print messages to a log file like this :
 	4    5  10         BD  2021/03/09  2021/03/09 00:00:00  false      100
 	
 	
-	Mapping file : examples\data-mapping.csv
+	Mapping file : mapping.csv
 	      from        to
 	0  id_site   id_site
 	1       ok       _ok

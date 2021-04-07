@@ -9,6 +9,7 @@ import sys
 import json
 import argparse
 import csv
+from datetime import datetime
 
 global mapping
 
@@ -63,6 +64,7 @@ def control(input_data, input_mapping):
 		conform = True
 	
 	# Messages
+	print(now_string)
 	print('[KO] Data non valid' if conform is False else '[OK] Data valid')
 	print('')
 	print('Input data : %s'%input_data)
@@ -131,6 +133,7 @@ def transform(input_data, input_mapping, output_data = None):
 	
 	# MESSAGES ################################################
 	
+	print(now_string)
 	print(('Input data : %s')%(input_data))
 	print(data.iloc[range(5),])
 	print('\n')
@@ -142,6 +145,9 @@ def transform(input_data, input_mapping, output_data = None):
 
 
 if __name__ == "__main__":
+	
+	now = datetime.now()
+	now_string = now.strftime("%d/%m/%Y %H:%M:%S")
 	
 	# ARGUMENTS ##############################################
 	
