@@ -1,6 +1,9 @@
 # validator-cli
 
-`validator-cli` is a command line interface to [validator](https://github.com/datagistips/validator) to either control your data (against a data schema), either transform your data (against a mapping file)
+`validator-cli` is a command line interface to [validator](https://github.com/datagistips/validator) to :
+
+- **control** your data (against a data schema)
+- **transform** your data (against a mapping file)
 
 	usage: validator-cli.py [-h] [-d] {control,transform} input schema
 	
