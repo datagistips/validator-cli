@@ -50,7 +50,7 @@ For instance :
 
 You can also transform a folder of data.
 
-	python validator-cli.py -i my_dir.csv -m my_mapping_file.csv
+	python validator-cli.py -d my_dir.csv -m my_mapping_file.csv
 
 > Notice only data with the right structure will be transformed
 
