@@ -2,7 +2,7 @@
 
 `validator-cli` is a command line interface to [validator](https://github.com/datagistips/validator)
 
-	C:\Python27\python.exe validator-cli.py --help
+	python.exe validator-cli.py --help
 	usage: validator-cli.py [-h] [-i INPUT] [-d INPUTDIR] -m MAPPING [-o OUTPUT]
 	
 	optional arguments:
