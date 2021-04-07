@@ -45,7 +45,7 @@ It has the following 2-column source-to-destination structure :
 ### :two: Transform your data with `transform`
 
 ### One file
-This line will transform `my_data.csv` into `my_data-mapped.csv`, using source-target fields specifications contained in `mapping.csv`
+This line will transform `data.csv` into `data-mapped.csv`, using source-target fields specifications contained in `mapping.csv`
 
 	python validator-cli.py transform data.csv -m mapping.csv
 
