@@ -90,7 +90,7 @@ if __name__ == "__main__":
 	parser.add_argument("-i", "--input", help="input file")
 	parser.add_argument("-d", "--inputdir", help="input directory")
 	parser.add_argument("-m", "--mapping", help="input mapping file path", required = True)
-	parser.add_argument("-o", "--output", help="output file (if in single file mode, not directory mode)")
+	parser.add_argument("-o", "--output", help="Output file (Optional and active if in single file mode, not directory mode)")
 
 
 	args = parser.parse_args()
