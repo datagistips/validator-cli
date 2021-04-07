@@ -38,7 +38,7 @@ For this, you can use the [validator GUI assistant](https://github.com/datagisti
 
 The mapping file, named in the above animation `data-mapping.csv` specifies the source fields and the target fields for the renaming of the data. 
 
-It has the following 2-column structure :
+It has the following 2-column source-to-destination structure :
 
 ![](https://github.com/datagistips/validator/raw/main/images/mapping.png)
 
