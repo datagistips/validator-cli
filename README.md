@@ -49,10 +49,7 @@ You can also transform a directory of data with `-d`. All the data files inside 
 
 > Notice only data with the right structure will be transformed
 
-## Example outputs
-You can redirect print messages to a log file like this :
-
-	python validator-cli.py control data.csv standard.csv > log.txt
+## Log outputs
 
 ### Control outputs
 	python validator-cli.py control data.csv standard.csv
@@ -107,3 +104,8 @@ will produce :
 	2     3   20        été         NaN                  NaN  false      100
 	3     4   20        été         NaN                  NaN  false      100
 	4     5   10         BD  2021/03/09  2021/03/09 00:00:00  false      100
+
+### Logs
+You can redirect print messages to a log file like this :
+
+	python validator-cli.py control data.csv standard.csv > log.txt
