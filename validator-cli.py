@@ -13,7 +13,7 @@ import csv
 global mapping
 
 
-def process(input_data, input_mapping, output_data = None):
+def transform(input_data, input_mapping, output_data = None):
 	
 	
 	# READ DATA ###############################################
@@ -86,18 +86,23 @@ if __name__ == "__main__":
 	
 	parser = argparse.ArgumentParser()
 	
-	parser.add_argument("-i", "--input", help="input file")
-	parser.add_argument("-d", "--inputdir", help="input directory")
-	parser.add_argument("-m", "--mapping", help="input mapping file path", required = True)
+	parser.add_argument("mode", choices=['control', 'transform'], help='Control data against a data schema or transform data thanks to a mapping file')
+	parser.add_argument("-d", "--directory", help="process entire directory", action="store_true")
+	parser.add_argument("input", help="input file or directory (depends if you specified -d or not)")
+	parser.add_argument("schema", help="input mapping file or data schema file path")
 	parser.add_argument("-o", "--output", help="Output file (Optional and active if in single file mode, not directory mode)")
 
 
 	args = parser.parse_args()
-
+	
+	mode = args.mode
+	directory = args.directory
 	input_data = args.input
-	input_dir = args.inputdir
-	input_mapping = args.mapping
+	input_mapping = args.schema
 	output_data = args.output
+	
+	print(mode)
+	print(args)
 	
 	
 	# READ ####################################################
@@ -112,41 +117,32 @@ if __name__ == "__main__":
 	
 	# PROCESS ####################################################
 	
-	# Process
-	if input_data is not None and input_dir is None:
-		
-		# READ FILE ----
-		
-		if not os.path.exists(input_data):
-			print(("ERROR : file '%s' doesn't exist")%input_data)
-			quit()
-		
-		if output_data is not None:
-			process(input_data, input_mapping, output_data)
-		else:
-			process(input_data, input_mapping)
-		
-	elif input_data is None and input_dir is not None:
-		
-		if not os.path.exists(input_dir):
-			print(("ERROR : directory '%s' doesn't exist")%input_dir)
-			quit()
-		
-		if output_data is not None:
-			print("Output file will not be taken into account when renaming batches of data")
+	# Transform
+	
+	if mode == "transform":
+		if directory is False :
 			
-		l = os.listdir(input_dir)
-		for input_data in l:
-			input_data = os.path.join(input_dir, input_data)
-			process(input_data, input_mapping)
-			print('-----------------------------------------------------------------------------------')
+			# READ FILE ----
 			
-	elif input_data is not None and input_dir is not None:
-		
-		print("ERROR : Choose either a file or folder with data")
-		quit()
-		
-	elif input_data is None and input_dir is None:
-		
-		print("ERROR : Choose either a file or folder with data")
-		quit()
+			if not os.path.exists(input_data):
+				print(("ERROR : file '%s' doesn't exist")%input_data)
+				quit()
+			
+			if output_data is not None:
+				transform(input_data, input_mapping, output_data) # we use the output data file name
+			else:
+				transform(input_data, input_mapping) # we'll create and output data name based on input data file name
+			
+		elif directory is True:
+			
+			if not os.path.exists(input_data):
+				print(("ERROR : directory '%s' doesn't exist")%input_dir)
+				quit()
+			
+			if output_data is not None:
+				print("Output file will not be taken into account when renaming batches of data")
+				
+			l = os.listdir(input_data)
+			for elt in l:
+				transform(os.path.join(input_data, elt), input_mapping)
+				print('-----------------------------------------------------------------------------------')

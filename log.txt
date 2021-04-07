@@ -1,0 +1,3 @@
+transform
+Namespace(mode='transform', directory=False, input='examples\\data.csv', schema='examples\\data-mapping.csv', output=None)
+ERROR : Choose either a file or folder with data
