@@ -38,23 +38,25 @@ Or you can use the [validator GUI assistant](https://github.com/datagistips/vali
 
 ![](https://github.com/datagistips/validator/raw/main/images/demo.gif)
 
-The mapping file, named in the above animation `data-mapping.csv` specifies the source fields and the target fields for the renaming of the data. It has the following structure :
+The mapping file, named in the above animation `data-mapping.csv` specifies the source fields and the target fields for the renaming of the data. 
+
+It has the following structure :
 
 ![](https://github.com/datagistips/validator/raw/main/images/mapping.png)
 
 ### :two: Transform your data with `transform`
 
 ### One file
-For instance, this line will transform `my_data.csv` into `my_data-mapped.csv`, using source-target fields specifications contained in `mapping.csv` file :
+This line will transform `my_data.csv` into `my_data-mapped.csv`, using source-target fields specifications contained in `mapping.csv` file :
 
 	python validator-cli.py transform data.csv -m mapping.csv
 
 ### One directory
-You can also transform a directory of data with `-d`. All the data files inside the directory, which respect the structure, will be transformed : 
+You can also transform files contained in a directory with `-d`
 
 	python validator-cli.py transform -d my_dir -m mapping.csv
 
-> Notice only data with the right structure will be transformed
+> Only data with the right structure will be transformed
 
 ## Log outputs
 
