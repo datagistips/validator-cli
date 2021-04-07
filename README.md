@@ -63,7 +63,7 @@ You can also transform files contained in a directory with `-d`
 ### `control` outputs
 	python validator-cli.py control data.csv standard.csv
 
-will produce :
+will output :
 
 	07/04/2021 19:05:23
 	[KO] Data non valid
@@ -83,7 +83,7 @@ will produce :
 ### `transform` outputs
 	python validator-cli.py transform data.csv mapping.csv
 
-will produce :
+will output :
 
 	07/04/2021 19:05:23
 	Input data : data.csv
