@@ -18,7 +18,7 @@
 	  -h, --help           show this help message and exit
 	  -d, --directory      process entire directory
 
-## Control your data in :one: step
+## Control your data with `control`
 
 Control a single file against a data standard
 
