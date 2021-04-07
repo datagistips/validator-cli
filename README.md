@@ -32,15 +32,13 @@ Control a directory of files against a data standard
 
 ### 1️⃣ Prepare your mapping file
 
-For this, you can use the output of `control` to create it manually.
-
-Or you can use the [validator GUI assistant](https://github.com/datagistips/validator).
+For this, you can use the [validator GUI assistant](https://github.com/datagistips/validator)
 
 ![](https://github.com/datagistips/validator/raw/main/images/demo.gif)
 
 The mapping file, named in the above animation `data-mapping.csv` specifies the source fields and the target fields for the renaming of the data. 
 
-It has the following structure :
+It has the following 2-column structure :
 
 ![](https://github.com/datagistips/validator/raw/main/images/mapping.png)
 
