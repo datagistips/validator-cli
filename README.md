@@ -1,6 +1,6 @@
 # validator-cli
 
-`Validator-cli` is a command line interface to [validator](https://github.com/datagistips/validator)
+`validator-cli` is a command line interface to [validator](https://github.com/datagistips/validator)
 
 	C:\Python27\python.exe validator-cli.py --help
 	usage: validator-cli.py [-h] [-i INPUT] [-d INPUTDIR] -m MAPPING [-o OUTPUT]
@@ -19,7 +19,7 @@
 
 ## Transform your data in :two: steps
 
-1️⃣ Prepare your mapping file with validator GUI.
+1️⃣ Prepare your mapping file with [validator GUI](https://github.com/datagistips/validator).
 
 ![](https://github.com/datagistips/validator/raw/main/images/demo.gif)
 
