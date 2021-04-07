@@ -5,6 +5,8 @@
 - **control** your data (against a data schema)
 - **transform** your data (against a mapping file)
 
+>
+
 	usage: validator-cli.py [-h] [-d] {control,transform} input schema
 	
 	positional arguments:
