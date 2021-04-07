@@ -36,46 +36,47 @@ def control(input_data, input_mapping):
 	# Columns
 	data_columns = list(data.columns)
 	schema_columns = list(mapping.iloc[:,0])
-	
-	# Schema columns absent from data
-	strange_cols = list()
-	matching_cols = list()
-	for elt in schema_columns:
-		if elt not in data_columns:
-			strange_cols.append(elt)
-		else:
-			matching_cols.append(elt)
-		
+
 	# Data columns absent from schema
-	strange_cols = list()
-	matching_cols = list()
+	strange_cols1 = list()
+	matching_cols1 = list()
 	for elt in data_columns:
 		if elt not in schema_columns:
-			strange_cols.append(elt)
+			strange_cols1.append(elt)
 		else:
-			matching_cols.append(elt)
+			matching_cols1.append(elt)
+	
+	# Schema columns absent from data
+	strange_cols2 = list()
+	matching_cols2 = list()
+	for elt in schema_columns:
+		if elt not in data_columns:
+			strange_cols2.append(elt)
+		else:
+			matching_cols2.append(elt)
 	
 	# Conform or not ?
-	if len(matching_cols) > 0:
+	if len(matching_cols1) > 0:
 		conform = False
-		pc = len(matching_cols) / data.shape[0]
+		pc = len(matching_cols1) / data.shape[0]
 	else:
 		conform = True
 	
 	# Messages
 	print('[KO] Data non valid' if conform is False else '[OK] Data valid')
-	print('---')
+	print('')
 	print('Input data : %s'%input_data)
 	print('Data schema : %s'%input_mapping)
-	print('---')
-	print(('Schema columns : %s')%(', '.join(schema_columns)))
+	print('')
 	print(('Data columns : %s')%(', '.join(data_columns)))
-	print('---')
-	print(('Schema columns present in data : %s')%(', '.join(matching_cols)))
-	print(('Schema columns absent from data : %s')%(', '.join(strange_cols)))
-	print('---')
-	print(('Data columns present in schema : %s')%(', '.join(matching_cols)))
-	print(('Data columns absent from schema : %s')%(', '.join(strange_cols)))
+	print(('Schema columns : %s')%(', '.join(schema_columns)))
+	print('')
+	print(('Data columns present in schema : %s')%(', '.join(matching_cols1)))
+	print(('Data columns absent from schema : %s')%(', '.join(strange_cols1)))
+	print('')
+	print(('Schema columns present in data : %s')%(', '.join(matching_cols2)))
+	print(('Schema columns absent from data : %s')%(', '.join(strange_cols2)))
+	
 
 
 def transform(input_data, input_mapping, output_data = None):
@@ -181,7 +182,6 @@ if __name__ == "__main__":
 	# Transform
 	
 	if mode == "control":
-		control(input_data, input_mapping)
 		
 		# Single file treatment -----
 		if directory is False :
