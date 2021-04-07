@@ -106,7 +106,7 @@ will output :
 	6       id       _id
 	
 	
-	Mapped data : examples\data-mapped.csv
+	Mapped data : data-mapped.csv
 	   _fid  _id       _lib    date_maj               _heure    _ok  id_site
 	0     1   11   à la mer  2021/03/02                  NaN   vrai      100
 	1     2   10  printemps  2021/03/09  2021/03/09 00:00:00  false      100
