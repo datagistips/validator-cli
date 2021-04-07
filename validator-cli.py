@@ -35,7 +35,6 @@ def process(input_data, input_mapping, output_data = None):
 	for elt in list(list(mapping.iloc[:,0])):
 		if elt not in list(data.columns):
 			if (elt != 'fid' and file_class == "geo") or (file_class == "df") :
-				print(elt)
 				strange_cols.append(elt)
 				
 	if len(strange_cols) > 0:

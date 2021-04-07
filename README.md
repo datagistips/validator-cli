@@ -39,8 +39,10 @@ You can also transform a directory of data with `-d`. All the data files inside 
 
 > Notice only data with the right structure will be transformed
 
-## Example scripts
-- If you want to see example command lines, see [RUN-examples.bat](https://github.com/datagistips/validator-cli/blob/master/example-scripts/RUN-examples.bat) for data transformation examples
+## Examples
+See [examples](examples) directory for example data and scripts.
+
+- If you want to see example command lines, see [RUN-examples.bat](https://github.com/datagistips/validator-cli/blob/master/examples/RUN-examples.bat) for data transformation examples
 - You can run `validator-cli` manually, with prompts :
-	- on a file with this [RUN-on-file batch](https://github.com/datagistips/validator-cli/blob/master/example-scripts/RUN-on-file.bat)
-	- or on a directory with this [RUN-on-dir batch](https://github.com/datagistips/validator-cli/blob/master/example-scripts/RUN-on-dir.bat)
+	- on a file with this [RUN-on-file batch](https://github.com/datagistips/validator-cli/blob/master/examples/RUN-on-file.bat)
+	- or on a directory with this [RUN-on-dir batch](https://github.com/datagistips/validator-cli/blob/master/examples/RUN-on-dir.bat)
