@@ -25,7 +25,9 @@ Control a directory of files against a data standard
 
 ## Transform your data in :two: steps
 
-1️⃣ Prepare your mapping file. For this, you can use the output of `control` to create it manually.
+### 1️⃣ Prepare your mapping file
+
+For this, you can use the output of `control` to create it manually.
 
 Or you can use the [validator GUI assistant](https://github.com/datagistips/validator).
 
@@ -35,7 +37,7 @@ The mapping file, named in the above animation `data-mapping.csv` specifies the 
 
 ![](https://github.com/datagistips/validator/raw/main/images/mapping.png)
 
-:two: Transform your data with `transform`
+### :two: Transform your data with `transform`
 
 ### One file
 For instance, this line will transform `my_data.csv` into `my_data-mapped.csv`, using source-target fields specifications contained in `mapping.csv` file :
