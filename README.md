@@ -29,13 +29,13 @@ The mapping file, named above `data-mapping.csv` specifies the source fields and
 
 :two: Transform other data or pools of data programmatically using the mapping file with `validator-cli`
 
-For instance :
+For instance, this line will transform `my_data.csv` into `my_data-mapped.csv`, using source-target fields specifications contained in `my_mapping_file.csv` file :
 
 	python validator-cli.py -i my_data.csv -m my_mapping_file.csv
 
-You can also transform a folder of data.
+You can also transform a directory of data with `-d`. All the data files inside the directory, which respect the structure, will be transformed : 
 
-	python validator-cli.py -d my_dir.csv -m my_mapping_file.csv
+	python validator-cli.py -d my_dir -m my_mapping_file.csv
 
 > Notice only data with the right structure will be transformed
 
