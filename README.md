@@ -17,9 +17,9 @@
 	                        output file (if in single file mode, not directory
 	                        mode)
 
-## Transform your data in 3 steps
+## Transform your data in :two: steps
 
-Prepare your mapping file with validator GUI.
+1️⃣ Prepare your mapping file with validator GUI.
 
 ![](https://github.com/datagistips/validator/raw/main/images/demo.gif)
 
@@ -27,7 +27,7 @@ Prepare your mapping file with validator GUI.
 
 ![](https://github.com/datagistips/validator/raw/main/images/mapping.png)
 
-Then, transform other data or pools of data programmatically using the mapping file with `validator-cli`
+:two: Transform other data or pools of data programmatically using the mapping file with `validator-cli`
 
 	C:\Python27\python.exe validator-cli.py --help
 	usage: validator-cli.py [-h] [-i INPUT] [-d INPUTDIR] -m MAPPING [-o OUTPUT]
@@ -55,3 +55,5 @@ You can also transform a folder of data.
 > Notice only data with the right structure will be transformed
 
 ## Example scripts
+If you want to see example scripts, to run validator programmatically, see [RUN-examples.bat](https://github.com/datagistips/validator-cli/blob/master/RUN-examples.bat) for data transformatione examples
+You can run validator-cli manually validator-cli on a file with this [RUN-on-file batch](https://github.com/datagistips/validator-cli/blob/master/RUN-on-file.bat), or on a directory with this [RUN-on-dir batch](https://github.com/datagistips/validator-cli/blob/master/RUN-on-dir.bat)
