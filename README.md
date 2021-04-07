@@ -50,10 +50,10 @@ For instance :
 
 You can also transform a folder of data.
 
-	python validator-cli.py -i my_dir.csv -m my_mapping_file.csv
+	python validator-cli.py -d my_dir.csv -m my_mapping_file.csv
 
 > Notice only data with the right structure will be transformed
 
 ## Example scripts
-If you want to see example scripts, to run validator programmatically, see [RUN-examples.bat](https://github.com/datagistips/validator-cli/blob/master/RUN-examples.bat) for data transformatione examples
-You can run validator-cli manually validator-cli on a file with this [RUN-on-file batch](https://github.com/datagistips/validator-cli/blob/master/RUN-on-file.bat), or on a directory with this [RUN-on-dir batch](https://github.com/datagistips/validator-cli/blob/master/RUN-on-dir.bat)
+If you want to see example scripts, to run validator programmatically, see [RUN-examples.bat](https://github.com/datagistips/validator-cli/blob/master/example-scripts/RUN-examples.bat) for data transformatione examples
+You can run validator-cli manually validator-cli on a file with this [RUN-on-file batch](https://github.com/datagistips/validator-cli/blob/master/example-scripts/RUN-on-file.bat), or on a directory with this [RUN-on-dir batch](https://github.com/datagistips/validator-cli/blob/master/example-scripts/RUN-on-dir.bat)
