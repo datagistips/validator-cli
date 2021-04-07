@@ -2,7 +2,7 @@
 
 `validator-cli` is a command line interface to [validator](https://github.com/datagistips/validator)
 
-	python.exe validator-cli.py --help
+	python validator-cli.py --help
 	usage: validator-cli.py [-h] [-i INPUT] [-d INPUTDIR] -m MAPPING [-o OUTPUT]
 	
 	optional arguments:
@@ -29,7 +29,7 @@
 
 :two: Transform other data or pools of data programmatically using the mapping file with `validator-cli`
 
-	C:\Python27\python.exe validator-cli.py --help
+	python validator-cli.py --help
 	usage: validator-cli.py [-h] [-i INPUT] [-d INPUTDIR] -m MAPPING [-o OUTPUT]
 	
 	optional arguments:
