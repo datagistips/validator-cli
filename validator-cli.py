@@ -131,14 +131,13 @@ def transform(input_data, input_mapping, output_data = None):
 	
 	# MESSAGES ################################################
 	
-	print(('> Input data : %s')%(input_data))
+	print(('Input data : %s')%(input_data))
 	print(data.iloc[range(5),])
 	print('\n')
-	print(('> Mapping file : %s')%(input_mapping))
+	print(('Mapping file : %s')%(input_mapping))
 	print(mapping)
 	print('\n')
-	print(('> Mapped data : %s')%(output_data))
-	print('> Here is its content (first 10 rows) :')
+	print(('Mapped data : %s')%(output_data))
 	print(data2.iloc[range(5), ])
 
 
