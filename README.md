@@ -23,7 +23,7 @@
 
 ![](https://github.com/datagistips/validator/raw/main/images/demo.gif)
 
-> The mapping file specifies the source field names and the target field names for the renaming of the data.
+> The mapping file, named above `data-mapping.csv` specifies the source fields and the target fields for the renaming of the data.
 
 ![](https://github.com/datagistips/validator/raw/main/images/mapping.png)
 
