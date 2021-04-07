@@ -55,7 +55,7 @@ You can also transform a folder of data.
 > Notice only data with the right structure will be transformed
 
 ## Example scripts
-- If you want to see example scripts, to run validator programmatically, see [RUN-examples.bat](https://github.com/datagistips/validator-cli/blob/master/example-scripts/RUN-examples.bat) for data transformatione examples
+- If you want to see example scripts, to run validator programmatically, see [RUN-examples.bat](https://github.com/datagistips/validator-cli/blob/master/example-scripts/RUN-examples.bat) for data transformation examples
 - You can run validator-cli manually validator-cli :
 	- on a file with this [RUN-on-file batch](https://github.com/datagistips/validator-cli/blob/master/example-scripts/RUN-on-file.bat)
 	- or on a directory with this [RUN-on-dir batch](https://github.com/datagistips/validator-cli/blob/master/example-scripts/RUN-on-dir.bat)
