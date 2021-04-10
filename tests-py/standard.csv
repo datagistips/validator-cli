@@ -1,0 +1,6 @@
+colonne,description,type
+id,identifiant du site,boolean
+date,date de mise à jour,date
+nb_sites,nombre de sites,integer
+ok,ok ?,boolean
+lib, libellé du site,character

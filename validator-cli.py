@@ -16,6 +16,7 @@ global mapping
 
 def read_data(input_data):
 	
+	# !! https://docs.python.org/3/howto/regex.html#non-capturing-and-named-groups
 	input_name = re.search('(.*)\\.(.*)', input_data).group(1)
 	input_extension = re.search('(.*)\\.(.*)', input_data).group(2)
 	
@@ -32,7 +33,7 @@ def read_data(input_data):
 def control(input_data, input_mapping):
 	
 	data = read_data(input_data)
-	mapping  = pd.read_csv(input_mapping)
+	mapping  = pd.read_csv(input_mapping) # ! spécifier le type avec dtype
 	
 	# Columns
 	data_columns = list(data.columns)
@@ -41,6 +42,7 @@ def control(input_data, input_mapping):
 	# Data columns absent from schema
 	strange_cols1 = list()
 	matching_cols1 = list()
+	# utiliser set plutôt et diff
 	for elt in data_columns:
 		if elt not in schema_columns:
 			strange_cols1.append(elt)
@@ -64,6 +66,7 @@ def control(input_data, input_mapping):
 		conform = True
 	
 	# Messages
+	# ! format, fstring, reach
 	print(now_string)
 	print('[KO] Data non valid' if conform is False else '[OK] Data valid')
 	print('')
