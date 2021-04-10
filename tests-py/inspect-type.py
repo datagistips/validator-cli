@@ -282,7 +282,38 @@ data = gpd.read_file("../examples/data.gpkg", encoding = "utf-8")
 standard = pd.read_csv("standard.csv", encoding = "iso-8859-1")
 # ~ mapping = pd.read_csv("../examples/data-mapping.csv", encoding = "utf-8")
 
-def control_types(data, standard):
+def control_standard(data, standard):
+	'''
+	>>> @data     
+	id         lib        date                heure     ok  id_site                   geometry
+0   11    à la mer  2021-03-02                 None   True      100   POINT (-0.39889 0.22078)
+1   10   printemps  2021-03-09  2021-03-09T00:00:00  False      100  POINT (-0.01670 -0.18367)
+2   20         été        None                 None  False      100    POINT (0.44341 0.46568)
+3   20         été        None                 None  False      100    POINT (0.44341 0.46568)
+4   10          BD  2021-03-09  2021-03-09T00:00:00  False      100  POINT (-0.01670 -0.18367)
+5   20         été        None                 None  False      100    POINT (0.44341 0.46568)
+6   10         DVD  2021-03-09  2021-03-09T00:00:00  False      100  POINT (-0.01670 -0.18367)
+7   20       livre        None                 None  False      100    POINT (0.44341 0.46568)
+8   10    oreiller  2021-03-09  2021-03-09T00:00:00  False      100  POINT (-0.01670 -0.18367)
+9   20     coussin        None                 None  False      100    POINT (0.44341 0.46568)
+10  10        jean  2021-03-09  2021-03-09T00:00:00  False      100  POINT (-0.01670 -0.18367)
+11  20  chaussette        None                 None  False      100    POINT (0.44341 0.46568)
+12  10       hiver  2021-03-09  2021-03-09T00:00:00  False      100  POINT (-0.01670 -0.18367)
+
+>>> @standard     
+	colonne          description       type
+0        id  identifiant du site    boolean
+1      date  date de mise à jour       date
+2  nb_sites      nombre de sites    integer
+3        ok                 ok ?    boolean
+4       lib      libellé du site  character
+
+> @d 
+{'id': False, 'lib': True, 'date': True, 'ok': True}
+	
+	'''
+	print("@data", data)
+	print("@standard", standard)
 	
 	print("## CONTROLE")
 	to_cols = [elt for elt in data.columns if elt in list(standard.iloc[:,0]) and elt != 'geometry']
@@ -303,9 +334,11 @@ def control_types(data, standard):
 			else:
 				res.append(True)
 				d[elt] = is_ok(data_var, to_type)
+				
+	print("@d", d)			
 	return(d)
 
-d = control_types(data, standard)
+d = control_standard(data, standard)
 
 print(d)
 
