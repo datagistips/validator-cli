@@ -308,5 +308,45 @@ d = control_types(data, standard)
 
 print(d)
 
+# Read data
+data = gpd.read_file("../examples/data.gpkg", encoding = "utf-8")
+standard = pd.read_csv("standard2.csv", encoding = "iso-8859-1")
+mapping = pd.read_csv("data-mapping.csv", encoding = "utf-8")
+
+def find_to_col(mapping, elt):
+	to_col = mapping[mapping["from"] == elt]["to"].item()
+	
+	if to_col == ('_%s')%elt:
+		return(None)
+	else:
+		return(to_col)
+		
 def control_mapping_standard(data, mapping, standard):
-	[elt for elt in data.columns if elt not in mapping.iloc[:,0]]
+	
+	print("-----")
+	print("CONTROL 2")
+	
+	from_cols = [elt for elt in list(data.columns) if elt != 'geometry']
+	to_cols = [find_to_col(mapping, elt) for elt in from_cols]
+	
+	
+	print("from : ", from_cols)
+	print("to : ", to_cols)
+	
+	d = dict()
+	for i, from_col in enumerate(from_cols):
+		to_col = to_cols[i]
+		if to_col is not None:
+			to_type = get_type_of_var(standard, to_col)
+			print("colonne d'entrée :", from_col)
+			if to_type is not None:
+				data_var = data[from_col]
+				data_var = data_var.dropna()
+				d[from_col] = is_ok(data_var, to_type)
+			else:
+				d[from_col] = is_ok(data_var, to_type)
+	
+	return(d)
+					
+d = control_mapping_standard(data, mapping, standard)
+print(d)
