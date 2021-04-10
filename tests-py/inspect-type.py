@@ -274,6 +274,7 @@ is_ok(data["time"], "time")
 data = pd.DataFrame({"time" : ["08:12:00", "30:12:00", "25:12:00"]})
 is_ok(data["time"], "time")
 
+
 # CONFRONTATION AU FICHIER DE STANDARD #########################
 
 # Read data
@@ -308,6 +309,9 @@ d = control_types(data, standard)
 
 print(d)
 
+
+# CASE WITH MAPPING FILE #########################################"
+
 # Read data
 data = gpd.read_file("../examples/data.gpkg", encoding = "utf-8")
 standard = pd.read_csv("standard2.csv", encoding = "iso-8859-1")
@@ -321,6 +325,27 @@ def find_to_col(mapping, elt):
 	else:
 		return(to_col)
 		
+def is_matched(df_var, regexp):
+	'''
+	>>> df_var
+0    a1
+1    a2
+2    a3
+
+>>> regexp
+'a[0-9]'
+
+> True
+	
+	'''
+	
+	v = [elt for elt in [bool(re.match(regexp, elt)) for elt in list(df_var)] if elt is False]
+	print(v)
+	if len(v) > 0:
+		return(False)
+	else:
+		return(True)
+	
 def control_mapping_standard(data, mapping, standard):
 	
 	print("-----")
@@ -349,4 +374,10 @@ def control_mapping_standard(data, mapping, standard):
 	return(d)
 					
 d = control_mapping_standard(data, mapping, standard)
-print(d)
+
+
+# TESTS REGEXP #########################################
+
+df = pd.DataFrame({'v':['a1', 'a2', 'a3']})
+print(is_matched(df['v'], 'a[0-9]'))
+
