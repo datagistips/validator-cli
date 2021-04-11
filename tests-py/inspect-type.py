@@ -2,6 +2,7 @@
 
 # - créer fonction considérant le mapping control_types_mapping(data, mapping, standard)
 # - améliorer la détection des dates
+# - enlever (True, None, None)
 
 import geopandas as gpd
 from dateutil.parser import parse
@@ -15,6 +16,7 @@ import argparse
 import csv
 from datetime import datetime
 import numpy as np
+import ast
 from dateutil.parser import parse
 
 # ~ from dateutil.parser import parse
@@ -22,9 +24,9 @@ from dateutil.parser import parse
 # ~ datetime.datetime(2003, 9, 25, 0, 0)
 
 
-def matches(df_var, regexp):
+def matches_regexp(df_var, regexp):
     """
-            Matches a column against a regexp
+            matches_regexp a column against a regexp
 
             >>> df_var
     0    a1
@@ -38,14 +40,33 @@ def matches(df_var, regexp):
 
     """
 
+    i_not_valid = [
+        i
+        for i, elt in enumerate([bool(re.match(regexp, elt)) for elt in list(df_var)])
+        if elt is False
+    ]
+    
+    v = [list(df_var)[i] for i in i_not_valid]
+    # ~ print(v)
+    if len(v) > 0:
+        return (False, v)
+    else:
+        return True
+        
+def matches_enum(df_var, l):
+    """
+
+
+    """
+
     v = [
         elt
-        for elt in [bool(re.match(regexp, elt)) for elt in list(df_var)]
-        if elt is False
+        for elt in list(df_var)
+        if elt not in l
     ]
     # ~ print(v)
     if len(v) > 0:
-        return False
+        return (False, v)
     else:
         return True
 
@@ -95,13 +116,22 @@ def control_time(time_ext):
     return res
 
 
-def get_type_of_var_in_standard(standard, the_var):
+def get_type_of_var(standard, the_var):
     """
-    >>> get_type_of_var_in_standard(standard, "id_site")
+    >>> get_type_of_var(standard, "id_site")
     'integer'
     """
 
-    res = standard[standard.iloc[:, 0] == the_var].iloc[0, 2]
+    res = standard[standard.iloc[:, 0] == the_var]['type']
+    return res
+
+    
+def get_enum_of_var(standard, the_var):
+    """
+    """
+
+    l = standard[standard.iloc[:, 0] == the_var]['enum'].item()
+    res = ast.literal_eval(l)
     return res
 
 
@@ -427,19 +457,33 @@ data = pd.DataFrame({"time": ["08:12:00", "30:12:00", "25:12:00"]})
 print(is_ok(data["time"], "time"))
 
 # Regexps
-data = pd.DataFrame({"values": ["75114-P-001", "75114-P-002", "75056-P-001"]})
-print(matches(data["values"], "^([013-9]\d|2[AB1-9])\d{3}-P-\d{3}$"))
+data = pd.DataFrame({"values": ["75114-P-001", "75114-P-002", "75056-P-001"]}) 
+print(matches_regexp(data["values"], "^([013-9]\d|2[AB1-9])\d{3}-P-\d{3}$"))# parkings
 data = pd.DataFrame({"values": ["75114-P-001", "751-P-001", "75114-P-00"]})
-print(matches(data["values"], "^([013-9]\d|2[AB1-9])\d{3}-P-\d{3}$"))
+print(matches_regexp(data["values"], "^([013-9]\d|2[AB1-9])\d{3}-P-\d{3}$")) 
 data = pd.DataFrame({"values": ["75114", "75100", "13090"]})
-print(matches(data["values"], "^([013-9]\d|2[AB1-9])\d{3}$"))
+print(matches_regexp(data["values"], "^([013-9]\d|2[AB1-9])\d{3}$")) # codes insee
 data = pd.DataFrame({"values": ["75114", "751", "751144"]})
-print(matches(data["values"], "^([013-9]\d|2[AB1-9])\d{3}$"))
-data = pd.DataFrame({"values": ["80295478500028", "80295478500018", "80295478500029"]})
-print(matches(data["values"], "^\d{14}$"))
+print(matches_regexp(data["values"], "^([013-9]\d|2[AB1-9])\d{3}$"))
+data = pd.DataFrame({"values": ["80295478500028", "80295478500018", "80295478500029"]}) 
+print(matches_regexp(data["values"], "^\d{14}$")) # siret
 data = pd.DataFrame({"values": ["802954785000", "8029547850001899", "80295478500029"]})
-print(matches(data["values"], "^\d{14}$"))
+print(matches_regexp(data["values"], "^\d{14}$"))
 
+# List of values
+print(">> Control of values list")
+standard = pd.read_csv("standard2.csv", encoding = "iso-8859-1")
+l = get_enum_of_var(standard, 'liste_valeurs1')
+data = pd.DataFrame({"values": ["a", "b", "c"]})
+print(matches_enum(data["values"], l))
+data = pd.DataFrame({"values": ["a", "b", "d"]})
+print(matches_enum(data["values"], l))
+
+l = get_enum_of_var(standard, 'liste_valeurs2')
+data = pd.DataFrame({"values": [1, 2, 3]})
+print(matches_enum(data["values"], l))
+data = pd.DataFrame({"values": [1, 2, 4]})
+print(matches_enum(data["values"], l))
 
 ################################################################
 # CONFRONTATION AU FICHIER DE STANDARD #########################
@@ -451,7 +495,7 @@ print(matches(data["values"], "^\d{14}$"))
 # ~ mapping = pd.read_csv("../examples/data-mapping.csv", encoding = "utf-8")
 
 
-def control_data_against_standard(data, standard):
+def control_data_to_standard(data, standard):
     """
             >>> @data
             id         lib        date                heure     ok  id_site                   geometry
@@ -496,7 +540,7 @@ def control_data_against_standard(data, standard):
     d = dict()
     res = list()
     for i, elt in enumerate(to_cols):
-        to_type = get_type_of_var_in_standard(standard, elt)
+        to_type = get_type_of_var(standard, elt)
         if elt != "geometry":
             print("colonne d'entrée :", elt)
             if to_type is not None:
@@ -512,7 +556,7 @@ def control_data_against_standard(data, standard):
     return d
 
 
-# ~ d = control_data_against_standard(data, standard)
+# ~ d = control_data_to_standard(data, standard)
 # ~ print(d)
 
 
@@ -533,7 +577,7 @@ def find_destination_column_for_source_column(mapping, elt):
         return to_col
 
 
-def control_data_against_mapping(data, mapping, standard):
+def control_data_to_mapping(data, mapping, standard):
 
     print("-----")
     print("CONTROL 2")
@@ -550,7 +594,7 @@ def control_data_against_mapping(data, mapping, standard):
     for i, from_col in enumerate(from_cols):
         to_col = to_cols[i]
         if to_col is not None:
-            to_type = get_type_of_var_in_standard(standard, to_col)
+            to_type = get_type_of_var(standard, to_col)
             print("colonne d'entrée :", from_col)
             if to_type is not None:
                 data_var = data[from_col]
@@ -562,10 +606,10 @@ def control_data_against_mapping(data, mapping, standard):
     return d
 
 
-# ~ d = control_data_against_mapping(data, mapping, standard)
+# ~ d = control_data_to_mapping(data, mapping, standard)
 
 
 # TESTS REGEXP #########################################
 
 # ~ df = pd.DataFrame({'v':['a1', 'a2', 'a3']})
-# ~ print(matches(df['v'], 'a[0-9]'))
+# ~ print(matches_regexp(df['v'], 'a[0-9]'))
