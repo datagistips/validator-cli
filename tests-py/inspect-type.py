@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# -*- coding: utf-8 -*-
 
 # - cr�er fonction consid�rant le mapping control_types_mapping(data, mapping, standard)
 # - am�liorer la d�tection des dates
