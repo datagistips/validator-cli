@@ -1,8 +1,8 @@
 # -*- coding: iso-8859-1 -*-
 
-# - créer fonction considérant le mapping control_types_mapping(data, mapping, standard)
-# - améliorer la détection des dates
-# - enlever (True, None, None)
+# - crï¿½er fonction considï¿½rant le mapping control_types_mapping(data, mapping, standard)
+# - amï¿½liorer la dï¿½tection des dates
+# - enlever (True)
 
 import geopandas as gpd
 from dateutil.parser import parse
@@ -149,7 +149,7 @@ def get_dtype_as_string(dtype):
         return "bool"
 
 
-# Référentiel
+# Rï¿½fï¿½rentiel
 # ~ from_type = ['integer', 'float', 'character', 'boolean', 'numeric', 'date', 'datetime'] # comprehensive types as mentioned in the standard
 # ~ to_type = ['int64', 'float64', 'object', 'bool', ('int64', 'float64'), 'datetime64', 'datetime64'] # pandas dtype as used in python
 # ~ d = dict(zip(from_type, to_type))
@@ -175,7 +175,7 @@ def is_ok(data_var, to_type):
 
     elif to_type == "integer":
         if data_var.dtype == "int64":
-            return (True, None, None)
+            return (True)
         elif data_var.dtype == "float64":
             return (False, "[ERROR] Float type found", None)
         elif data_var.dtype == "object":
@@ -193,7 +193,7 @@ def is_ok(data_var, to_type):
 
     elif to_type in ("float", "number"):
         if data_var.dtype == "float64":
-            return (True, None, None)
+            return (True)
         elif data_var.dtype == "int64":
             return (True, "[WARNING] Integer type found", None)
         elif data_var.dtype == "object":
@@ -214,17 +214,17 @@ def is_ok(data_var, to_type):
                 else:
                     return (True, "[WARNING] Integer type found", None)
             else:
-                return (True, None, None)
+                return (True)
         else:
             return (False, "[ERROR] Wrong type found", None)
 
     elif to_type == "boolean":
         if data_var.dtype == "bool":
-            return (True, None, None)
+            return (True)
         elif data_var.dtype == "int64":
             unique_values = list(set(data_var))
             if unique_values == [0, 1] or unique_values in (0, 1):
-                return (True, None, None)
+                return (True)
             else:
                 return (
                     False,
@@ -237,105 +237,45 @@ def is_ok(data_var, to_type):
             ref_bool1 = [["0", "1"], ["O"], ["1"]]
             ref_bool2 = [["FALSE", "TRUE"], ["TRUE"], ["FALSE"]]
             ref_bool3 = [["False", "True"], ["True"], ["False"]]
-            ref_bool_all = ["0", "1", "TRUE", "FALSE", "True", "False"]
 
             # Unique values
             unique_values = sorted(list(set(data_var)))
-            # ~ print('unique values : ', unique_values, unique_values.sort())
+            print(unique_values)
             if (
-                unique_values not in ref_bool1
-                and unique_values not in ref_bool2
-                and unique_values not in ref_bool3
+                unique_values in ref_bool1
+                or unique_values in ref_bool2
+                or unique_values in ref_bool3
             ):
-                elts_not_valid = [elt for elt in unique_values if elt in ref_bool_all]
-                return (
-                    False,
-                    "[ERROR] Values not valid or mix of values",
-                    unique_values[1:5],
-                )
+                return (True)
+            elif all([elt in ["0", "1", "TRUE", "FALSE", "True", "False"] for elt in unique_values]):
+                return (False, '[ERROR] Mix of values', None)
             else:
-                return (True, None, None)
+                return (False, '[ERROR] Wrong values', None)
         else:
             return False
-
+	
     elif to_type == "date":
-        if data_var.dtype == "datetime64":
-            return (True, None, None)
-        elif data_var.dtype == "object":
-
-            # "a", "b", "c"
-            i_not_valid = [
-                i
-                for i, elt in enumerate(
-                    [bool(re.match("[0-9]+-[0-9]+-[0-9]+", elt)) for elt in data_var]
-                )
-                if elt is False
-            ]
-            elts_not_valid = list(set([list(data_var)[i] for i in i_not_valid]))
-            n_not_valid = len(elts_not_valid)
-
-            if n_not_valid == 0:
-
-                # Control 2021-06-03
-                i_not_valid = [
-                    i
-                    for i, elt in enumerate([control_date(elt) for elt in data_var])
-                    if elt is None
-                ]
-                elts_not_valid = list(set([list(data_var)[i] for i in i_not_valid]))
-                n_not_valid = len(elts_not_valid)
-                if n_not_valid > 0:
-
-                    # Control 03-06-2021
-                    i_not_valid_alt1 = [
-                        i
-                        for i, elt in enumerate(
-                            [control_date_alt1(elt) for elt in data_var]
-                        )
-                        if elt is None
-                    ]
-                    elts_not_valid_alt1 = list(
-                        set([list(data_var)[i] for i in i_not_valid_alt1])
-                    )
-                    n_not_valid_alt1 = len(elts_not_valid_alt1)
-                    if n_not_valid_alt1 > 0:
-
-                        # Control 03-06-21
-                        i_not_valid_alt2 = [
-                            i
-                            for i, elt in enumerate(
-                                [control_date_alt2(elt) for elt in data_var]
-                            )
-                            if elt is None
-                        ]
-                        elts_not_valid_alt2 = list(
-                            set([list(data_var)[i] for i in i_not_valid_alt2])
-                        )
-                        n_not_valid_alt2 = len(elts_not_valid_alt2)
-                        if n_not_valid_alt2 > 0:
-                            return (False, "[ERROR] Dates not valid", None)
-                        else:
-                            return (
-                                False,
-                                "[ERROR] Years too short. They must be in 4 numbers. Ex. 2021",
-                                None,
-                            )
-                    else:
-                        return (
-                            False,
-                            "[ERROR] Days, months and years in the wrong order",
-                            None,
-                        )
-                else:
-                    return (True, None, None)
-            else:
-                return (False, "[ERROR] Wrong type", None)
-        else:
-            return (False, "[ERROR] Wrong type", None)
-
+	    print('ok')
+	    if data_var.dtype == "datetime64":
+		    print('ok')
+	    elif data_var.dtype == "object":
+            
+		    if all([control_date(elt) is not None for elt in data_var]):
+			    return(True)
+		    elif all([control_date_alt1(elt) is not None for elt in data_var]):
+			    return((False, '[ERROR] Day, month and year in wrong order', None))
+		    elif all([control_date_alt2(elt) is not None for elt in data_var]):
+			    return((False, '[ERROR] Years too short', None))
+		    elif all([bool(re.match("[0-9]+-[0-9]+-[0-9]+", elt)) is True for elt in data_var]):
+			    return((False, '[ERROR] Days not in range', None))
+		    elif all([bool(re.match("[0-9]+/[0-9]+/[0-9]+", elt)) is True for elt in data_var]):
+			    return((False, '[ERROR] Not well formatted. Folllow ISO8601', None))
+		    else:
+			    return((False, '[ERROR] Dates not valid', None))
+				
     elif to_type == "datetime":
         if data_var.dtype == "datetime64":
-            return (True, None, None)
+            return (True)
         elif data_var.dtype == "object":
             elts_not_valid = [
                 elt
@@ -346,13 +286,13 @@ def is_ok(data_var, to_type):
             if n_not_valid > 0:
                 print((False, "[ERROR] Wrong datetime", None))
             else:
-                return (True, None, None)
+                return (True)
         else:
             return (False, "[ERROR] Wrong type", None)
 
     elif to_type == "time":
         if data_var.dtype == "datetime64":
-            return (True, None, None)
+            return (True)
         elif data_var.dtype == "object":
             elts_not_valid = [
                 elt for elt in [control_time(elt) for elt in data_var] if elt is None
@@ -361,43 +301,43 @@ def is_ok(data_var, to_type):
             if n_not_valid > 0:
                 return (False, "[ERROR] Wrong time", None)
             else:
-                return (True, None, None)
+                return (True)
         else:
             return (False, "[ERROR] Wrong type", None)
 
 
 # TESTS ################################################
 
-# Strings
-data = pd.DataFrame({"str": ["a", "b", "c"]})
-print(is_ok(data["str"], "string"))
-print(is_ok(data["str"], "character"))
-data = pd.DataFrame({"str": [1, 2, 3]})
-print(is_ok(data["str"], "character"))
-data = pd.DataFrame({"str": ["a", 2, 3]})
-print(is_ok(data["str"], "character"))
+# ~ # Strings
+# ~ data = pd.DataFrame({"str": ["a", "b", "c"]})
+# ~ print(is_ok(data["str"], "string"))
+# ~ print(is_ok(data["str"], "character"))
+# ~ data = pd.DataFrame({"str": [1, 2, 3]})
+# ~ print(is_ok(data["str"], "character"))
+# ~ data = pd.DataFrame({"str": ["a", 2, 3]})
+# ~ print(is_ok(data["str"], "character"))
 
-# Integers
-data = pd.DataFrame({"id": [1, 2, 3]})
-print(is_ok(data["id"], "integer"))
-data = pd.DataFrame({"id": ["1", "2", "3"]})
-print(is_ok(data["id"], "integer"))
-data = pd.DataFrame({"id": ["a", "b", "c"]})
-print(is_ok(data["id"], "integer"))
+# ~ # Integers
+# ~ data = pd.DataFrame({"id": [1, 2, 3]})
+# ~ print(is_ok(data["id"], "integer"))
+# ~ data = pd.DataFrame({"id": ["1", "2", "3"]})
+# ~ print(is_ok(data["id"], "integer"))
+# ~ data = pd.DataFrame({"id": ["a", "b", "c"]})
+# ~ print(is_ok(data["id"], "integer"))
 
-# Floats
-data = pd.DataFrame({"num": [1.2, 2.2, 3.2]})
-print(is_ok(data["num"], "float"))
-data = pd.DataFrame({"num": ["1.2", "2.2", "3.2"]})
-print(is_ok(data["num"], "float"))
-data = pd.DataFrame({"num": ["1.2", "2.2", "3.2"]})
-print(is_ok(data["num"], "number"))
-data = pd.DataFrame({"num": ["1", "2", "3"]})
-print(is_ok(data["num"], "number"))
-data = pd.DataFrame({"num": [1, 2, 3]})
-print(is_ok(data["num"], "number"))
-data = pd.DataFrame({"num": ["a", "b", "c", 1, 2, 1.2]})
-print(is_ok(data["num"], "number"))
+# ~ # Floats
+# ~ data = pd.DataFrame({"num": [1.2, 2.2, 3.2]})
+# ~ print(is_ok(data["num"], "float"))
+# ~ data = pd.DataFrame({"num": ["1.2", "2.2", "3.2"]})
+# ~ print(is_ok(data["num"], "float"))
+# ~ data = pd.DataFrame({"num": ["1.2", "2.2", "3.2"]})
+# ~ print(is_ok(data["num"], "number"))
+# ~ data = pd.DataFrame({"num": ["1", "2", "3"]})
+# ~ print(is_ok(data["num"], "number"))
+# ~ data = pd.DataFrame({"num": [1, 2, 3]})
+# ~ print(is_ok(data["num"], "number"))
+# ~ data = pd.DataFrame({"num": ["a", "b", "c", 1, 2, 1.2]})
+# ~ print(is_ok(data["num"], "number"))
 
 # Booleans
 data = pd.DataFrame({"ok": [True, False, True]})
@@ -417,73 +357,73 @@ print(is_ok(data["ok"], "boolean"))
 data = pd.DataFrame({"ok": ["0", "1", "2"]})
 print(is_ok(data["ok"], "boolean"))
 
-# Dates
-data = pd.DataFrame({"date": ["2021-04-03", "2021-04-02", "2021-04-01"]})
-print(is_ok(data["date"], "date"))
-data = pd.DataFrame({"date": ["2021/04/03", "2021/04/02", "2021/04/01"]})
-print(is_ok(data["date"], "date"))
-data = pd.DataFrame(
-    {"date": ["2021-04-03", "2021-04-33", "2021-04-01"]}
-)  # avec une erreur
-print(is_ok(data["date"], "date"))
-data = pd.DataFrame(
-    {"date": ["01-04-2021", "02-04-2021", "03-04-2021"]}
-)  # avec un autre formatage
-print(is_ok(data["date"], "date"))
-data = pd.DataFrame(
-    {"date": ["01-04-21", "02-04-21", "03-04-21"]}
-)  # avec les années courtes
-print(is_ok(data["date"], "date"))
-data = pd.DataFrame({"date": [1, 2, 3]})
-print(is_ok(data["date"], "date"))
-data = pd.DataFrame({"date": ["a", "b", "c"]})
-print(is_ok(data["date"], "date"))
+# ~ # Dates
+# ~ data = pd.DataFrame({"date": ["2021-04-03", "2021-04-02", "2021-04-01"]})
+# ~ print(is_ok(data["date"], "date"))
+# ~ data = pd.DataFrame({"date": ["2021/04/03", "2021/04/02", "2021/04/01"]})
+# ~ print(is_ok(data["date"], "date"))
+# ~ data = pd.DataFrame(
+    # ~ {"date": ["2021-04-03", "2021-04-33", "2021-04-01"]}
+# ~ )  # avec une erreur
+# ~ print(is_ok(data["date"], "date"))
+# ~ data = pd.DataFrame(
+    # ~ {"date": ["01-04-2021", "02-04-2021", "03-04-2021"]}
+# ~ )  # avec un autre formatage
+# ~ print(is_ok(data["date"], "date"))
+# ~ data = pd.DataFrame(
+    # ~ {"date": ["01-04-21", "02-04-21", "03-04-21"]}
+# ~ )  # avec les annï¿½es courtes
+# ~ print(is_ok(data["date"], "date"))
+# ~ data = pd.DataFrame({"date": [1, 2, 3]})
+# ~ print(is_ok(data["date"], "date"))
+# ~ data = pd.DataFrame({"date": ["a", "b", "c"]})
+# ~ print(is_ok(data["date"], "date"))
 
 
-# Datetimes
-data = pd.DataFrame(
-    {"datetime": ["2021-04-03 08:12:00", "2021-04-02 08:12:00", "2021-04-01 10:12:00"]}
-)
-print(is_ok(data["datetime"], "datetime"))
-data = pd.DataFrame(
-    {"datetime": ["2021-04-03  08:12:00", "2021-04-02 30:12:00", "2021-04-01 25:12:00"]}
-)
-print(is_ok(data["datetime"], "datetime"))
+# ~ # Datetimes
+# ~ data = pd.DataFrame(
+    # ~ {"datetime": ["2021-04-03 08:12:00", "2021-04-02 08:12:00", "2021-04-01 10:12:00"]}
+# ~ )
+# ~ print(is_ok(data["datetime"], "datetime"))
+# ~ data = pd.DataFrame(
+    # ~ {"datetime": ["2021-04-03  08:12:00", "2021-04-02 30:12:00", "2021-04-01 25:12:00"]}
+# ~ )
+# ~ print(is_ok(data["datetime"], "datetime"))
 
-# Times
-data = pd.DataFrame({"time": ["08:12:00", "08:12:00", "10:12:00"]})
-print(is_ok(data["time"], "time"))
-data = pd.DataFrame({"time": ["08:12:00", "30:12:00", "25:12:00"]})
-print(is_ok(data["time"], "time"))
+# ~ # Times
+# ~ data = pd.DataFrame({"time": ["08:12:00", "08:12:00", "10:12:00"]})
+# ~ print(is_ok(data["time"], "time"))
+# ~ data = pd.DataFrame({"time": ["08:12:00", "30:12:00", "25:12:00"]})
+# ~ print(is_ok(data["time"], "time"))
 
-# Regexps
-data = pd.DataFrame({"values": ["75114-P-001", "75114-P-002", "75056-P-001"]}) 
-print(matches_regexp(data["values"], "^([013-9]\d|2[AB1-9])\d{3}-P-\d{3}$"))# parkings
-data = pd.DataFrame({"values": ["75114-P-001", "751-P-001", "75114-P-00"]})
-print(matches_regexp(data["values"], "^([013-9]\d|2[AB1-9])\d{3}-P-\d{3}$")) 
-data = pd.DataFrame({"values": ["75114", "75100", "13090"]})
-print(matches_regexp(data["values"], "^([013-9]\d|2[AB1-9])\d{3}$")) # codes insee
-data = pd.DataFrame({"values": ["75114", "751", "751144"]})
-print(matches_regexp(data["values"], "^([013-9]\d|2[AB1-9])\d{3}$"))
-data = pd.DataFrame({"values": ["80295478500028", "80295478500018", "80295478500029"]}) 
-print(matches_regexp(data["values"], "^\d{14}$")) # siret
-data = pd.DataFrame({"values": ["802954785000", "8029547850001899", "80295478500029"]})
-print(matches_regexp(data["values"], "^\d{14}$"))
+# ~ # Regexps
+# ~ data = pd.DataFrame({"values": ["75114-P-001", "75114-P-002", "75056-P-001"]}) 
+# ~ print(matches_regexp(data["values"], "^([013-9]\d|2[AB1-9])\d{3}-P-\d{3}$"))# parkings
+# ~ data = pd.DataFrame({"values": ["75114-P-001", "751-P-001", "75114-P-00"]})
+# ~ print(matches_regexp(data["values"], "^([013-9]\d|2[AB1-9])\d{3}-P-\d{3}$")) 
+# ~ data = pd.DataFrame({"values": ["75114", "75100", "13090"]})
+# ~ print(matches_regexp(data["values"], "^([013-9]\d|2[AB1-9])\d{3}$")) # codes insee
+# ~ data = pd.DataFrame({"values": ["75114", "751", "751144"]})
+# ~ print(matches_regexp(data["values"], "^([013-9]\d|2[AB1-9])\d{3}$"))
+# ~ data = pd.DataFrame({"values": ["80295478500028", "80295478500018", "80295478500029"]}) 
+# ~ print(matches_regexp(data["values"], "^\d{14}$")) # siret
+# ~ data = pd.DataFrame({"values": ["802954785000", "8029547850001899", "80295478500029"]})
+# ~ print(matches_regexp(data["values"], "^\d{14}$"))
 
-# List of values
-print(">> Control of values list")
-standard = pd.read_csv("standard2.csv", encoding = "iso-8859-1")
-l = get_enum_of_var(standard, 'liste_valeurs1')
-data = pd.DataFrame({"values": ["a", "b", "c"]})
-print(matches_enum(data["values"], l))
-data = pd.DataFrame({"values": ["a", "b", "d"]})
-print(matches_enum(data["values"], l))
+# ~ # List of values
+# ~ print(">> Control of values list")
+# ~ standard = pd.read_csv("standard2.csv", encoding = "iso-8859-1")
+# ~ l = get_enum_of_var(standard, 'liste_valeurs1')
+# ~ data = pd.DataFrame({"values": ["a", "b", "c"]})
+# ~ print(matches_enum(data["values"], l))
+# ~ data = pd.DataFrame({"values": ["a", "b", "d"]})
+# ~ print(matches_enum(data["values"], l))
 
-l = get_enum_of_var(standard, 'liste_valeurs2')
-data = pd.DataFrame({"values": [1, 2, 3]})
-print(matches_enum(data["values"], l))
-data = pd.DataFrame({"values": [1, 2, 4]})
-print(matches_enum(data["values"], l))
+# ~ l = get_enum_of_var(standard, 'liste_valeurs2')
+# ~ data = pd.DataFrame({"values": [1, 2, 3]})
+# ~ print(matches_enum(data["values"], l))
+# ~ data = pd.DataFrame({"values": [1, 2, 4]})
+# ~ print(matches_enum(data["values"], l))
 
 ################################################################
 # CONFRONTATION AU FICHIER DE STANDARD #########################
@@ -499,12 +439,12 @@ def control_data_to_standard(data, standard):
     """
             >>> @data
             id         lib        date                heure     ok  id_site                   geometry
-    0   11    à la mer  2021-03-02                 None   True      100   POINT (-0.39889 0.22078)
+    0   11    ï¿½ la mer  2021-03-02                 None   True      100   POINT (-0.39889 0.22078)
     1   10   printemps  2021-03-09  2021-03-09T00:00:00  False      100  POINT (-0.01670 -0.18367)
-    2   20         été        None                 None  False      100    POINT (0.44341 0.46568)
-    3   20         été        None                 None  False      100    POINT (0.44341 0.46568)
+    2   20         ï¿½tï¿½        None                 None  False      100    POINT (0.44341 0.46568)
+    3   20         ï¿½tï¿½        None                 None  False      100    POINT (0.44341 0.46568)
     4   10          BD  2021-03-09  2021-03-09T00:00:00  False      100  POINT (-0.01670 -0.18367)
-    5   20         été        None                 None  False      100    POINT (0.44341 0.46568)
+    5   20         ï¿½tï¿½        None                 None  False      100    POINT (0.44341 0.46568)
     6   10         DVD  2021-03-09  2021-03-09T00:00:00  False      100  POINT (-0.01670 -0.18367)
     7   20       livre        None                 None  False      100    POINT (0.44341 0.46568)
     8   10    oreiller  2021-03-09  2021-03-09T00:00:00  False      100  POINT (-0.01670 -0.18367)
@@ -516,10 +456,10 @@ def control_data_to_standard(data, standard):
     >>> @standard
             colonne          description       type
     0        id  identifiant du site    boolean
-    1      date  date de mise à jour       date
+    1      date  date de mise ï¿½ jour       date
     2  nb_sites      nombre de sites    integer
     3        ok                 ok ?    boolean
-    4       lib      libellé du site  character
+    4       lib      libellï¿½ du site  character
 
     > @d
     {'id': False, 'lib': True, 'date': True, 'ok': True}
@@ -534,7 +474,7 @@ def control_data_to_standard(data, standard):
         for elt in data.columns
         if elt in list(standard.iloc[:, 0]) and elt != "geometry"
     ]
-    # ~ to_cols = [mapping.iloc[i, 1] for i in range(data.shape[1]) if mapping.iloc[i, 1]!="_%s"%mapping.iloc[i, 0]] # on ne retient pas les colonnes avec préfixe _
+    # ~ to_cols = [mapping.iloc[i, 1] for i in range(data.shape[1]) if mapping.iloc[i, 1]!="_%s"%mapping.iloc[i, 0]] # on ne retient pas les colonnes avec prï¿½fixe _
     print(">> to_cols : ", to_cols)
 
     d = dict()
@@ -542,7 +482,7 @@ def control_data_to_standard(data, standard):
     for i, elt in enumerate(to_cols):
         to_type = get_type_of_var(standard, elt)
         if elt != "geometry":
-            print("colonne d'entrée :", elt)
+            print("colonne d'entrï¿½e :", elt)
             if to_type is not None:
                 data_var = data[elt]
                 data_var = data_var.dropna()
@@ -595,7 +535,7 @@ def control_data_to_mapping(data, mapping, standard):
         to_col = to_cols[i]
         if to_col is not None:
             to_type = get_type_of_var(standard, to_col)
-            print("colonne d'entrée :", from_col)
+            print("colonne d'entrï¿½e :", from_col)
             if to_type is not None:
                 data_var = data[from_col]
                 data_var = data_var.dropna()
