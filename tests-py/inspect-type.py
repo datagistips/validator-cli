@@ -26,7 +26,7 @@ def control_date(date_text):
 		res = datetime.strptime(date_text, '%Y-%m-%d') # ISO 8601
 	except ValueError:
 		# ~ raise ValueError("Incorrect data format, should be YYYY-MM-DD")
-		return(0)
+		return(None)
 	return(res)
 	
 def control_date_alt1(date_text):
@@ -34,7 +34,7 @@ def control_date_alt1(date_text):
 		res = datetime.strptime(date_text, '%d-%m-%Y')
 	except ValueError:
 		# ~ raise ValueError("Incorrect data format, should be YYYY-MM-DD")
-		return(0)
+		return(None)
 	return(res)
 
 def control_date_alt2(date_text):
@@ -42,7 +42,7 @@ def control_date_alt2(date_text):
 		res = datetime.strptime(date_text, '%d-%m-%y')
 	except ValueError:
 		# ~ raise ValueError("Incorrect data format, should be YYYY-MM-DD")
-		return(0)
+		return(None)
 	return(res)
 	
 def control_datetime(datetime_text):
@@ -50,7 +50,7 @@ def control_datetime(datetime_text):
 		res = datetime.strptime(datetime_text, '%Y-%m-%d %H:%M:%S')
 	except ValueError:
 		# ~ raise ValueError("Incorrect data format, should be YYYY-MM-DD")
-		return(0)
+		return(None)
 	return(res)
 	
 def control_time(time_ext):
@@ -58,7 +58,7 @@ def control_time(time_ext):
 		res = datetime.strptime(time_ext, '%Y-%m-%d %H:%M:%S')
 	except ValueError:
 		# ~ raise ValueError("Incorrect data format, should be YYYY-MM-DD")
-		return(0)
+		return(None)
 	return(res)
 
 def get_type_of_var(standard, the_var):
@@ -103,7 +103,7 @@ def is_ok(data_var, to_type):
 	print("type d'origine : ", data_var.dtype)
 	print("type de destination : ", to_type)
 	
-	if to_type in ("character", "text"):
+	if to_type in ("character", "text", "string"):
 		if data_var.dtype == "object":
 			return(True)
 		else:
@@ -111,39 +111,46 @@ def is_ok(data_var, to_type):
 	
 	elif to_type == "integer":
 		if data_var.dtype == "int64":
-			return(True)
+			return((True, None, None))
 		elif data_var.dtype == "float64":
-			return(False)
+			return((False, '[ERROR] Float type found', None))
 		elif data_var.dtype == "object":
-			v = [bool(re.match('\d', str(elt))) for elt in list(data['id'])]
-			v = [elt for elt in v if v is False]
-			if(len(v) > 0):
-				print("il existe des éléments non entiers")
-				return(False)
+			v = [bool(re.match('\d', str(elt))) for elt in list(data_var)]
+			i_not_valid = [i for i, elt in enumerate(v) if elt is False]
+			if(len(i_not_valid) > 0):
+				print("toto >", i_not_valid)
+				elts_not_valid = [list(data_var)[i] for i in i_not_valid]
+				print(elts_not_valid)
+				return((False, '[ERROR] String characters found', elts_not_valid[1:5]))
 			else:
-				print('ok')
-				return(True)
+				return((True, '[WARNING] Object type found', None))
 		else:
-			return(False)
+			return((False, '[ERROR] Wrong type found', None))
 				
 	elif to_type in ("float", "number"):
 		if data_var.dtype == "float64":
-			return(True)
+			return((True, None, None))
 		elif data_var.dtype == "int64":
-			return(False)
+			return((True, '[WARNING] Integer type found', None))
 		elif data_var.dtype == "object":
-			v = [bool(re.match("(\d+\.\d+)|(\d+\,\d+)", elt)) for elt in data_var]
-			v = [elt for elt in v if v is False]
-			if len(v) > 0:
-				return(False)
+			v = [bool(re.match("(\d+\.?\d+)|(\d+\,?\d+)", str(elt))) for elt in data_var]
+			i_not_valid = [i for i, elt in enumerate(v) if elt is False]
+			if len(i_not_valid) > 0:
+				v = [bool(re.match("(\d+\.?\d?)|(\d+\,?\d?)", str(elt))) for elt in data_var]
+				i_not_valid = [i for i, elt in enumerate(v) if elt is False]
+				if len(i_not_valid) > 0:
+					print("toto >", i_not_valid)
+					elts_not_valid = [list(data_var)[i] for i in i_not_valid]
+					return((False, '[ERROR] Not float found', elts_not_valid[1:5]))
+				else:
+					return((True, '[WARNING] Integer type found', None))
 			else:
-				return(True)
+				return((True, None, None))
 		else:
-			return(False)
+			return((False, '[ERROR] Wrong type found', None))
 			
 			
 	elif to_type == "boolean":
-		
 		if data_var.dtype == "bool":
 			return(True)
 		elif data_var.dtype == "int64":
@@ -155,9 +162,9 @@ def is_ok(data_var, to_type):
 		elif data_var.dtype == "object":
 			print("!! vérifs")
 			ref_bool = ["0", "1", "TRUE", "FALSE", "True", "False"]
-			v_not_valid = [elt for elt in list(set(data_var)) if elt not in ref_bool]
-			print("v_not_valid", v_not_valid)
-			if len(v_not_valid) > 0:
+			elts_not_valid = [elt for elt in list(set(data_var)) if elt not in ref_bool]
+			print("v_not_valid > ", elts_not_valid)
+			if len(elts_not_valid) > 0:
 				return(False)
 			else:
 				return(True)
@@ -169,13 +176,14 @@ def is_ok(data_var, to_type):
 			return(True)
 		elif data_var.dtype == "object":
 			print('controle date')
-			n_not_valid = len([elt for elt in [control_date(elt) for elt in data_var] if elt == 0])
+			n_not_valid = len([elt for elt in [control_date(elt) for elt in data_var] if elt is None])
 			if n_not_valid > 0:
 				return(False)
-				n_not_valid = len([elt for elt in [control_date_alt1(elt) for elt in data_var] if elt == 0])
+				elts_not_valid = [elt for elt in [control_date_alt1(elt) for elt in data_var] if elt is None]
+				n_not_valid = len(elts_not_valid)
 				if n_not_valid > 0:
 					return(False)
-					n_not_valid = len([elt for elt in [control_date_alt2(elt) for elt in data_var] if elt == 0])
+					n_not_valid = len([elt for elt in [control_date_alt2(elt) for elt in data_var] if elt is None])
 					if n_not_valid > 0:
 						return(False)
 					else:
@@ -189,7 +197,8 @@ def is_ok(data_var, to_type):
 		if data_var.dtype == "datetime64":
 			print("ok")
 		elif data_var.dtype == "object":
-			n_not_valid = len([elt for elt in [control_datetime(elt) for elt in data_var] if elt == 0])
+			elts_not_valid = [elt for elt in [control_datetime(elt) for elt in data_var] if elt is None]
+			n_not_valid = len(elts_not_valid)
 			if n_not_valid > 0:
 				print(False)
 			else:
@@ -201,7 +210,8 @@ def is_ok(data_var, to_type):
 		if data_var.dtype == "datetime64":
 			return(True)
 		elif data_var.dtype == "object":
-			n_not_valid = len([elt for elt in [control_time(elt) for elt in data_var] if elt == 0])
+			elts_not_valid = [elt for elt in [control_time(elt) for elt in data_var] if elt is None]
+			n_not_valid = len(elts_not_valid)
 			if n_not_valid > 0:
 				return(False)
 			else:
@@ -212,67 +222,74 @@ def is_ok(data_var, to_type):
 
 # TESTS ################################################
 
-# Strings
-data = pd.DataFrame({"str" : ["a","b","c"]})
-is_ok(data["str"], "string")
-is_ok(data["str"], "character")
-data = pd.DataFrame({"str" : [1,2,3]})
-is_ok(data["str"], "character")
-data = pd.DataFrame({"str" : ['a',2,3]})
-is_ok(data["str"], "character")
+# ~ # Strings
+# ~ data = pd.DataFrame({"str" : ["a","b","c"]})
+# ~ print(is_ok(data["str"], "string"))
+# ~ print(is_ok(data["str"], "character"))
+# ~ data = pd.DataFrame({"str" : [1,2,3]})
+# ~ print(is_ok(data["str"], "character"))
+# ~ data = pd.DataFrame({"str" : ['a',2,3]})
+# ~ print(is_ok(data["str"], "character"))
 
-# Integers
-data = pd.DataFrame({"id" : [1,2,3]})
-is_ok(data["id"], "integer")
-data = pd.DataFrame({"id" : ["1","2","3"]})
-is_ok(data["id"], "integer")
+# ~ # Integers
+# ~ data = pd.DataFrame({"id" : [1,2,3]})
+# ~ print(is_ok(data["id"], "integer"))
+# ~ data = pd.DataFrame({"id" : ["1","2","3"]})
+# ~ print(is_ok(data["id"], "integer"))
+# ~ data = pd.DataFrame({"id" : ["a","b","c"]})
+# ~ print(is_ok(data["id"], "integer"))
 
 # Floats
 data = pd.DataFrame({"num" : [1.2,2.2,3.2]})
-is_ok(data["num"], "float")
+print(is_ok(data["num"], "float"))
 data = pd.DataFrame({"num" : ["1.2","2.2","3.2"]})
-is_ok(data["num"], "foat")
+print(is_ok(data["num"], "float"))
 data = pd.DataFrame({"num" : ["1.2","2.2","3.2"]})
-is_ok(data["num"], "number")
+print(is_ok(data["num"], "number"))
+data = pd.DataFrame({"num" : ["1","2","3"]})
+print(is_ok(data["num"], "number"))
+data = pd.DataFrame({"num" : [1,2,3]})
+print(is_ok(data["num"], "number"))
+data = pd.DataFrame({"num" : ["a", "b", "c", 1, 2, 1.2]})
+print(is_ok(data["num"], "number"))
 
+# ~ # Booleans
+# ~ data = pd.DataFrame({"ok" : [True, False, True]})
+# ~ is_ok(data["ok"], "boolean")
+# ~ data = pd.DataFrame({"ok" : [0, 1, 1]})
+# ~ is_ok(data["ok"], "boolean")
+# ~ data = pd.DataFrame({"ok" : ["TRUE", "FALSE", "TRUE"]})
+# ~ is_ok(data["ok"], "boolean")
+# ~ data = pd.DataFrame({"ok" : ["True", "False", "True"]})
+# ~ is_ok(data["ok"], "boolean")
+# ~ data = pd.DataFrame({"ok" : ["TRUE", "False", "True"]})
+# ~ is_ok(data["ok"], "boolean")
+# ~ data = pd.DataFrame({"ok" : ["0", "1", "1"]})
+# ~ is_ok(data["ok"], "boolean")
 
-# Booleans
-data = pd.DataFrame({"ok" : [True, False, True]})
-is_ok(data["ok"], "boolean")
-data = pd.DataFrame({"ok" : [0, 1, 1]})
-is_ok(data["ok"], "boolean")
-data = pd.DataFrame({"ok" : ["TRUE", "FALSE", "TRUE"]})
-is_ok(data["ok"], "boolean")
-data = pd.DataFrame({"ok" : ["True", "False", "True"]})
-is_ok(data["ok"], "boolean")
-data = pd.DataFrame({"ok" : ["TRUE", "False", "True"]})
-is_ok(data["ok"], "boolean")
-data = pd.DataFrame({"ok" : ["0", "1", "1"]})
-is_ok(data["ok"], "boolean")
+# ~ # Dates
+# ~ data = pd.DataFrame({"date" : ["2021-04-03", "2021-04-02", "2021-04-01"]})
+# ~ is_ok(data["date"], "date")
+# ~ data = pd.DataFrame({"date" : ["2021/04/03", "2021/04/02", "2021/04/01"]})
+# ~ is_ok(data["date"], "date")
+# ~ data = pd.DataFrame({"date" : ["2021-04-03", "2021-04-33", "2021-04-01"]}) # avec une erreur
+# ~ is_ok(data["date"], "date")
+# ~ data = pd.DataFrame({"date" : ["01-04-2021", "02-04-2021", "03-04-2021"]}) # avec un autre formatage
+# ~ is_ok(data["date"], "date")
+# ~ data = pd.DataFrame({"date" : ["01-04-21", "02-04-21", "03-04-21"]}) # avec les années courtes
+# ~ is_ok(data["date"], "date")
 
-# Dates
-data = pd.DataFrame({"date" : ["2021-04-03", "2021-04-02", "2021-04-01"]})
-is_ok(data["date"], "date")
-data = pd.DataFrame({"date" : ["2021/04/03", "2021/04/02", "2021/04/01"]})
-is_ok(data["date"], "date")
-data = pd.DataFrame({"date" : ["2021-04-03", "2021-04-33", "2021-04-01"]}) # avec une erreur
-is_ok(data["date"], "date")
-data = pd.DataFrame({"date" : ["01-04-2021", "02-04-2021", "03-04-2021"]}) # avec un autre formatage
-is_ok(data["date"], "date")
-data = pd.DataFrame({"date" : ["01-04-21", "02-04-21", "03-04-21"]}) # avec les années courtes
-is_ok(data["date"], "date")
+# ~ # Datetimes
+# ~ data = pd.DataFrame({"datetime" : ["2021-04-03 08:12:00", "2021-04-02 08:12:00", "2021-04-01 10:12:00"]})
+# ~ is_ok(data["datetime"], "datetime")
+# ~ data = pd.DataFrame({"datetime" : ["2021-04-03  08:12:00", "2021-04-02 30:12:00", "2021-04-01 25:12:00"]})
+# ~ is_ok(data["datetime"], "datetime")
 
-# Datetimes
-data = pd.DataFrame({"datetime" : ["2021-04-03 08:12:00", "2021-04-02 08:12:00", "2021-04-01 10:12:00"]})
-is_ok(data["datetime"], "datetime")
-data = pd.DataFrame({"datetime" : ["2021-04-03  08:12:00", "2021-04-02 30:12:00", "2021-04-01 25:12:00"]})
-is_ok(data["datetime"], "datetime")
-
-# Times
-data = pd.DataFrame({"time" : ["08:12:00", "08:12:00", "10:12:00"]})
-is_ok(data["time"], "time")
-data = pd.DataFrame({"time" : ["08:12:00", "30:12:00", "25:12:00"]})
-is_ok(data["time"], "time")
+# ~ # Times
+# ~ data = pd.DataFrame({"time" : ["08:12:00", "08:12:00", "10:12:00"]})
+# ~ is_ok(data["time"], "time")
+# ~ data = pd.DataFrame({"time" : ["08:12:00", "30:12:00", "25:12:00"]})
+# ~ is_ok(data["time"], "time")
 
 
 # CONFRONTATION AU FICHIER DE STANDARD #########################
@@ -338,9 +355,8 @@ def control_standard(data, standard):
 	print("@d", d)			
 	return(d)
 
-d = control_standard(data, standard)
-
-print(d)
+# ~ d = control_standard(data, standard)
+# ~ print(d)
 
 
 # CASE WITH MAPPING FILE #########################################"
@@ -406,11 +422,11 @@ def control_mapping_standard(data, mapping, standard):
 	
 	return(d)
 					
-d = control_mapping_standard(data, mapping, standard)
+# ~ d = control_mapping_standard(data, mapping, standard)
 
 
 # TESTS REGEXP #########################################
 
 df = pd.DataFrame({'v':['a1', 'a2', 'a3']})
-print(is_matched(df['v'], 'a[0-9]'))
+# ~ print(is_matched(df['v'], 'a[0-9]'))
 
