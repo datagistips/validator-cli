@@ -14,22 +14,15 @@ from rich import print
 from rich.console import Console
 from rich.markdown import Markdown
 import ast
-
-MARKDOWN = """
-# This is an h1
-
-Rich can do a pretty *decent* job of rendering markdown.
-
-1. This is a list item
-2. This is another list item
-"""
+import numpy as np
 
 console = Console()
-md = Markdown(MARKDOWN)
 
 global mapping
 
 def matches_regexp(df_var, regexp):
+	
+	
     """
             matches_regexp a column against a regexp
 
@@ -50,9 +43,9 @@ def matches_regexp(df_var, regexp):
         for i, elt in enumerate([bool(re.match(regexp, elt)) for elt in list(df_var)])
         if elt is False
     ]
+    
 
     v = [list(df_var)[i] for i in i_not_valid]
-    # ~ print(v)
     if len(v) > 0:
         return (False, v)
     else:
@@ -118,7 +111,7 @@ def get_pattern_of_var(standard, the_var):
     """
     """
 
-    res = standard[standard.iloc[:, 0] == the_var]["pattern"].item()
+    res = standard[standard['name'] == the_var]["pattern"].item()
     res = None if res == '' else res
     return res
 
@@ -129,13 +122,13 @@ def get_type_of_var(standard, the_var):
     'integer'
     """
 
-    res = standard[standard.iloc[:, 0] == the_var]["type"].item()
+    res = standard[standard['name'] == the_var]["type"].item()
     return res
 
 
 def get_enum_of_var(standard, the_var):
 	
-	l = standard[standard.iloc[:, 0] == the_var]["enum"].item()
+	l = standard[standard['name'] == the_var]["enum"].item()
 	l = None if l == '' else l
 	if l is not None:
 		res = ast.literal_eval(l)
@@ -223,11 +216,13 @@ def is_ok(data_var, to_type):
             else:
                 return (
                     False,
-                    "Integer values not in range",
+                    "Integer values not equal to 0 or 1",
                     unique_values[1:5],
                 )
         elif data_var.dtype == "object":
 
+            data_var = data_var.astype('str')
+            
             # Boolean valid values
             ref_bool1 = [["0", "1"], ["O"], ["1"]]
             ref_bool2 = [["FALSE", "TRUE"], ["TRUE"], ["FALSE"]]
@@ -235,7 +230,6 @@ def is_ok(data_var, to_type):
 
             # Unique values
             unique_values = sorted(list(set(data_var)))
-            print(unique_values)
             if (
                 unique_values in ref_bool1
                 or unique_values in ref_bool2
@@ -248,7 +242,7 @@ def is_ok(data_var, to_type):
                     for elt in unique_values
                 ]
             ):
-                return (False, "Mix of values", None)
+                return (False, "Mix of boolean values, for instance TRUE, True, 0 and FALSE at the same time", None)
             else:
                 return (False, "Wrong values", None)
         else:
@@ -256,7 +250,7 @@ def is_ok(data_var, to_type):
 
     elif to_type == "date":
         if data_var.dtype == "datetime64":
-            print("ok")
+            return(True)
         elif data_var.dtype == "object":
 
             if all([control_date(elt) is not None for elt in data_var]):
@@ -271,7 +265,7 @@ def is_ok(data_var, to_type):
                     for elt in data_var
                 ]
             ):
-                return (False, "Days not in range", None)
+                return (False, "Day(s) not in range", None)
             elif all(
                 [
                     bool(re.match("[0-9]+/[0-9]+/[0-9]+", elt)) is True
@@ -341,93 +335,167 @@ def control(input_data, input_mapping):
 	data = pd.DataFrame(data = {
 	'id_site':[1,2,3], 
 	'foo1':['a', 'b', 'c'],
-	'foo3':['a', 'b', 'c'], 
-	'pattern':['a1', 'a2', 'a3'],
+	'foo2':['a', 'b', 'c'], 
+	'pattern':['b1', 'a2', 'a3'],
 	'list_values':['a', 'b', 'd'],
 	'date1':['2020-03-20', '2020-03-21', '2020-03-19'],
-	'date2':['2020-03-33', '2020-03-21', '2020-03-19']
+	'date2':['2020-03-33', '2020-03-21', '2020-03-19'],
+	'date3':['21-01-2020', '21-01-2020', '21-01-2020'],
+	'ok1':[0, 1, 0],
+	'ok2':['TRUE', 'FALSE', 'TRUE'],
+	'ok3':['FALSE', False, True],
+	'ok4':[0, 1, 2],
+	'insee1' : ["5001", "75056", "751144"],
+	'siret1':["802954785000", "8029547850001899", "80295478500029"]
+
 	})
+	
 	standard = pd.DataFrame(data = {
-	'fields':['id_site', 'pattern', 'list_values', 'foo2', 'foo3', 'date1', 'date2'], 
-	'type':['integer', 'character', 'character', 'character', 'integer', 'date', 'date'], 
-	'pattern':['', 'b[0-9]', '', '', '', '', ''],
-	'enum':['','','["a", "b", "c"]', '', '', '', '']
+	'name':['id_site', 'pattern', 'list_values', 'foo3', 'foo2', 'date1', 'date2', 'date3', 'ok1', 'ok2', 'ok3', 'ok4', 'insee1', 'siret1'], 
+	'type':['integer', 'character', 'character', 'character', 'integer', 'date', 'date', 'date', 'boolean','boolean','boolean','boolean', 'character', 'character'], 
+	'pattern':['', 'b[0-9]', '', '', '', '', '', '','','','','','^([013-9]\d|2[AB1-9])\d{3}$', '^\d{14}$'],
+	'enum':['','','["a", "b", "c"]', '', '', '', '', '','','','','','','']
 	})
+	
+	standard.astype({'name': 'object', 'type':'object', 'pattern':'object', 'enum':'object'}).dtypes
 	
 	# Columns
 	data_columns = list(data.columns)
-	schema_columns = list(standard.iloc[:,0])
+	schema_columns = list(standard["name"])
 	
-	
-	# DATA ###########################
+	# HEADER ###########################
 	
 	print(now_string)
 	print('')
 	
-	print('[bold blue]%s[/bold blue]'%input_data)
 	
-	# ~ MARKDOWN = """
-	# ~ DATA
-	# ~ """
-	# ~ md = Markdown(MARKDOWN)
-	# ~ console.print(md)
+	# SCHEMA ###########################
 	
+	MARKDOWN = """
+# %s
+"""%input_mapping
+	md = Markdown(MARKDOWN)
+	console.print(md)
 	
-	# Data columns absent from schema
-	strange_cols1 = list()
-	matching_cols1 = list()
+	# ~ print('[bold blue]%s[/bold blue]'%input_mapping)
 	
+	for elt in schema_columns:
+		if elt not in data_columns:
+			print('[red]%s[/red]'%elt)
+		else:
+			print('[green]%s[/green]'%elt)
+	
+	print('')
+	
+	# DATA ###########################
+	
+	MARKDOWN = """
+# %s
+"""%input_data
+	md = Markdown(MARKDOWN)
+	console.print(md)
+	
+	d = dict()
 	# FIELD ANALYSIS
 	for elt in data_columns:
 		
+		d[elt] = dict()
+		
 		# PRESENCE
 		if elt not in schema_columns:
-			print(elt)
-			print('[red]%s absent from schema[/red]'%elt)
+			# ~ print(elt)
+			msg = "[red]'%s' absent from schema[/red]"%elt
+			# ~ print(msg)
+			d[elt]['presence']=(False, msg)
 		else:
+			d[elt]['presence']=(True, None)
 			# TYPES
 			to_type = get_type_of_var(standard, elt)
-			print('%s (%s)'%(elt, to_type))
+			# ~ print('%s (%s)'%(elt, to_type))
 			res = is_ok(data[elt], to_type)
 			if res is True:
-				print('[green]Type %s ok[/green]'%to_type)
+				msg = '[green]Type %s is ok[/green]'%to_type
+				# ~ print(msg)
+				d[elt]['type']=(True, msg)
 			elif res is False:
-				print('[red]Type must be %s[/red]'%to_type)
+				msg = '[red]Type must be %s[/red]'%to_type
+				# ~ print(msg)
+				d[elt]['type']=(False, msg)
 			else:
 				msg = res[1]
 				if res[0] is True:
-					print(msg)
+					d[elt]['type']=(True, msg)
+					# ~ print(msg)
 				else:
-					print('[red]%s[/red]'%msg)
+					msg = '[red]%s[/red]'%msg
+					# ~ print(msg)
+					d[elt]['type']=(False, msg)
 			
 			# PATTERNS
 			patt = get_pattern_of_var(standard, elt)
 			if patt is not None:
 				res = matches_regexp(data[elt], get_pattern_of_var(standard, elt))
 				if res[0] is False:
-					print("[red]'%s' do not match pattern %s[/red]"%(', '.join(res[1]), patt))
+					msg = "[red]'%s' do(es) not match pattern %s[/red]"%(', '.join(res[1]), patt)
+					# ~ print(msg)
+					d[elt]['pattern']=(False, msg)
 				else:
-					print("[green]Pattern %s ok[/green]"%(patt))
+					msg = "[green]Pattern %s is respected[/green]"%(patt)
+					# ~ print(msg)
+					d[elt]['pattern']=(True, msg)
 					
 			# ENUMS
 			enums = get_enum_of_var(standard, elt)
 			if enums is not None:
 				res = matches_enum(data[elt], enums)
 				if res[0] is False:
-					print("[red]'%s' do not match list of possible values '%s'[/red]"%(', '.join(res[1]), ','.join(enums)))
+					msg = "[red]'%s' do(es) not belong to the possible values '%s'[/red]"%(', '.join(res[1]), ','.join(enums))
+					# ~ print(msg)
+					d[elt]['enums']=(False, msg)
 		print('')
-		
 	
-	# SCHEMA ###########################
+	print(d)
 	
-	print('[bold blue]%s[/bold blue]'%input_mapping)
+	# SUMMARY ######################
+	
+	MARKDOWN = """
+# %s
+"""%input_mapping
+	md = Markdown(MARKDOWN)
+	console.print(md)	
+	
 	
 	for elt in schema_columns:
-		if elt not in data_columns:
-			print('[red]%s absent in data[/red]'%elt)
+		if elt not in d.keys():
+			print('[red]%s *ABSENT*[/red]'%elt)
 		else:
-			print('[green]%s present in data[/green]'%elt)
-	# ! format, fstring, reach
+			d2 = d[elt]
+			to_type = get_type_of_var(standard, elt)
+			if any([elt[0] is False for elt in d2.values()]):
+				print('[red]%s (%s)[/red]'%(elt, to_type))
+			else:
+				print('[green]%s (%s)[/green]'%(elt, to_type))
+	
+	# PRINT #######################
+	
+	MARKDOWN = """
+# %s
+"""%input_data
+	md = Markdown(MARKDOWN)
+	console.print(md)
+	
+	for key, value in d.items():
+		if key not in schema_columns:
+			print('[red]%s *ABSENT*[/red]'%key)
+		else:
+			to_type = get_type_of_var(standard, key)
+			if(all([elt[0] is True for elt in value.values()])):
+				print('%s (%s) [green]OK[/green]'%(key, to_type))
+			else:
+				for key2, value2 in value.items():
+					if value2[0] is False:
+						print('%s (%s) %s'%(key, to_type, value2[1]))
+		# ~ print('')
 
 
 def transform(input_data, input_mapping, output_data = None):
@@ -445,7 +513,7 @@ def transform(input_data, input_mapping, output_data = None):
 	# CONTROL ###################################################
 	
 	strange_cols = list()
-	for elt in list(list(mapping.iloc[:,0])):
+	for elt in list(list(mapping['name'])):
 		if elt not in list(data.columns):
 			if (elt != 'fid' and file_class == "geo") or (file_class == "df") :
 				strange_cols.append(elt)
