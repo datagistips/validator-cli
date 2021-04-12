@@ -256,9 +256,9 @@ def is_ok(data_var, to_type):
             if all([control_date(elt) is not None for elt in data_var]):
                 return True
             elif all([control_date_alt1(elt) is not None for elt in data_var]):
-                return (False, "Day, month and year in wrong order", None)
+                return (False, "Day, month and year in wrong order. Follow ISO-8601 : apply 2021-04-01", None)
             elif all([control_date_alt2(elt) is not None for elt in data_var]):
-                return (False, "Years too short", None)
+                return (False, "Years too short. Follow ISO-8601 : apply 2021-04-01", None)
             elif all(
                 [
                     bool(re.match("[0-9]+-[0-9]+-[0-9]+", elt)) is True
@@ -272,9 +272,9 @@ def is_ok(data_var, to_type):
                     for elt in data_var
                 ]
             ):
-                return (False, "Not well formatted. Folllow ISO8601", None)
+                return (False, "Not well formatted. Follow ISO-8601 : apply 2021-04-01", None)
             else:
-                return (False, "Dates not valid", None)
+                return (False, "Dates not valid. Follow ISO-8601 : apply 2021-04-01", None)
 
     elif to_type == "datetime":
         if data_var.dtype == "datetime64":
