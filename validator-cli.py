@@ -175,25 +175,23 @@ def is_ok(data_var, to_type):
         if data_var.dtype == "int64":
             return True
         elif data_var.dtype == "float64":
-            return (False, "[ERROR] Float type found", None)
+            return (False, "Float type found", None)
         elif data_var.dtype == "object":
             v = [bool(re.match("\d", str(elt))) for elt in list(data_var)]
             i_not_valid = [i for i, elt in enumerate(v) if elt is False]
             if len(i_not_valid) > 0:
-                print("toto >", i_not_valid)
                 elts_not_valid = [list(data_var)[i] for i in i_not_valid]
-                print(elts_not_valid)
-                return (False, "[ERROR] String characters found", elts_not_valid[1:5])
+                return (False, "String characters found", elts_not_valid[1:5])
             else:
-                return (True, "[WARNING] Object type found", None)
+                return (True)
         else:
-            return (False, "[ERROR] Wrong type found", None)
+            return (False)
 
     elif to_type in ("float", "number"):
         if data_var.dtype == "float64":
-            return True
+            return (True)
         elif data_var.dtype == "int64":
-            return (True, "[WARNING] Integer type found", None)
+            return (True, "Integer type found", None)
         elif data_var.dtype == "object":
             v = [
                 bool(re.match("(\d+\.?\d+)|(\d+\,?\d+)", str(elt))) for elt in data_var
@@ -207,13 +205,13 @@ def is_ok(data_var, to_type):
                 i_not_valid = [i for i, elt in enumerate(v) if elt is False]
                 if len(i_not_valid) > 0:
                     elts_not_valid = [list(data_var)[i] for i in i_not_valid]
-                    return (False, "[ERROR] No float types found", elts_not_valid[1:5])
+                    return (False, "No float types found", elts_not_valid[1:5])
                 else:
-                    return (True, "[WARNING] Integer type found", None)
+                    return (True, "Integer type found", None)
             else:
                 return True
         else:
-            return (False, "[ERROR] Wrong type found", None)
+            return (False)
 
     elif to_type == "boolean":
         if data_var.dtype == "bool":
@@ -225,7 +223,7 @@ def is_ok(data_var, to_type):
             else:
                 return (
                     False,
-                    "[ERROR] Integer values not in range",
+                    "Integer values not in range",
                     unique_values[1:5],
                 )
         elif data_var.dtype == "object":
@@ -250,14 +248,13 @@ def is_ok(data_var, to_type):
                     for elt in unique_values
                 ]
             ):
-                return (False, "[ERROR] Mix of values", None)
+                return (False, "Mix of values", None)
             else:
-                return (False, "[ERROR] Wrong values", None)
+                return (False, "Wrong values", None)
         else:
             return False
 
     elif to_type == "date":
-        print("ok")
         if data_var.dtype == "datetime64":
             print("ok")
         elif data_var.dtype == "object":
@@ -265,25 +262,25 @@ def is_ok(data_var, to_type):
             if all([control_date(elt) is not None for elt in data_var]):
                 return True
             elif all([control_date_alt1(elt) is not None for elt in data_var]):
-                return (False, "[ERROR] Day, month and year in wrong order", None)
+                return (False, "Day, month and year in wrong order", None)
             elif all([control_date_alt2(elt) is not None for elt in data_var]):
-                return (False, "[ERROR] Years too short", None)
+                return (False, "Years too short", None)
             elif all(
                 [
                     bool(re.match("[0-9]+-[0-9]+-[0-9]+", elt)) is True
                     for elt in data_var
                 ]
             ):
-                return (False, "[ERROR] Days not in range", None)
+                return (False, "Days not in range", None)
             elif all(
                 [
                     bool(re.match("[0-9]+/[0-9]+/[0-9]+", elt)) is True
                     for elt in data_var
                 ]
             ):
-                return (False, "[ERROR] Not well formatted. Folllow ISO8601", None)
+                return (False, "Not well formatted. Folllow ISO8601", None)
             else:
-                return (False, "[ERROR] Dates not valid", None)
+                return (False, "Dates not valid", None)
 
     elif to_type == "datetime":
         if data_var.dtype == "datetime64":
@@ -296,11 +293,11 @@ def is_ok(data_var, to_type):
             ]
             n_not_valid = len(elts_not_valid)
             if n_not_valid > 0:
-                print((False, "[ERROR] Wrong datetime", None))
+                return (False, "Wrong datetime", None)
             else:
                 return True
         else:
-            return (False, "[ERROR] Wrong type", None)
+            return (False)
 
     elif to_type == "time":
         if data_var.dtype == "datetime64":
@@ -311,11 +308,11 @@ def is_ok(data_var, to_type):
             ]
             n_not_valid = len(elts_not_valid)
             if n_not_valid > 0:
-                return (False, "[ERROR] Wrong time", None)
+                return (False, "Wrong time", None)
             else:
                 return True
         else:
-            return (False, "[ERROR] Wrong type", None)
+            return (False)
 
 
 def read_data(input_data):
@@ -338,122 +335,99 @@ def control(input_data, input_mapping):
 	
 	# Read Data
 	data = read_data(input_data)
-	mapping  = pd.read_csv(input_mapping) # ! spécifier le type avec dtype
+	standard  = pd.read_csv(input_mapping) # ! spécifier le type avec dtype
 	
 	# Foo Data
 	data = pd.DataFrame(data = {
 	'id_site':[1,2,3], 
-	'foo1':['a', 'b', 'c'], 
+	'foo1':['a', 'b', 'c'],
+	'foo3':['a', 'b', 'c'], 
 	'pattern':['a1', 'a2', 'a3'],
-	'list_values':['a', 'b', 'd']
+	'list_values':['a', 'b', 'd'],
+	'date1':['2020-03-20', '2020-03-21', '2020-03-19'],
+	'date2':['2020-03-33', '2020-03-21', '2020-03-19']
 	})
-	mapping = pd.DataFrame(data = {
-	'fields':['id_site', 'pattern', 'list_values'], 
-	'type':['integer', 'character', 'character'], 
-	'pattern':['', 'b[0-9]', ''],
-	'enum':['','','["a", "b", "c"]']
+	standard = pd.DataFrame(data = {
+	'fields':['id_site', 'pattern', 'list_values', 'foo2', 'foo3', 'date1', 'date2'], 
+	'type':['integer', 'character', 'character', 'character', 'integer', 'date', 'date'], 
+	'pattern':['', 'b[0-9]', '', '', '', '', ''],
+	'enum':['','','["a", "b", "c"]', '', '', '', '']
 	})
 	
 	# Columns
 	data_columns = list(data.columns)
-	schema_columns = list(mapping.iloc[:,0])
+	schema_columns = list(standard.iloc[:,0])
 	
 	
-	# PRESENCE OF FIELDS ###########################
-	
-	MARKDOWN = """
-	PRESENCE OF FIELDS
-	"""
-	
-	md = Markdown(MARKDOWN)
-	console.print(md)
-	
-	print("[bold blue]PRESENCE[/bold blue]")
+	# DATA ###########################
 	
 	print(now_string)
+	print('')
+	
+	print('[bold blue]%s[/bold blue]'%input_data)
+	
+	# ~ MARKDOWN = """
+	# ~ DATA
+	# ~ """
+	# ~ md = Markdown(MARKDOWN)
+	# ~ console.print(md)
+	
 	
 	# Data columns absent from schema
 	strange_cols1 = list()
 	matching_cols1 = list()
-	# !! utiliser set plutôt et diff
+	
+	# FIELD ANALYSIS
 	for elt in data_columns:
+		
+		# PRESENCE
 		if elt not in schema_columns:
-			strange_cols1.append(elt)
+			print(elt)
 			print('[red]%s absent from schema[/red]'%elt)
 		else:
-			matching_cols1.append(elt)
-	
-	# Schema columns absent from data
-	strange_cols2 = list()
-	matching_cols2 = list()
-	for elt in schema_columns:
-		if elt not in data_columns:
-			strange_cols2.append(elt)
-			print('[red]%s absent from data[/red]'%elt)
-		else:
-			matching_cols2.append(elt)
-	
-	# valid or not ?
-	# ~ if len(matching_cols1) > 0:
-		# ~ conform = False
-		# ~ pc = len(matching_cols1) / data.shape[0]
-	# ~ else:
-		# ~ conform = True
-	
-	# Messages
-	# ! format, fstring, reach
-	# ~ print(now_string)
-	# ~ print('[KO] Data non valid' if conform is False else '[OK] Data valid')
-	# ~ print('')
-	# ~ print('Input data : %s'%input_data)
-	# ~ print('Data schema : %s'%input_mapping)
-	# ~ print('')
-	# ~ print(('Data columns : %s')%(', '.join(data_columns)))
-	# ~ print(('Schema columns : %s')%(', '.join(schema_columns)))
-	# ~ print('')
-	# ~ print(('Data columns present in schema : %s')%(', '.join(matching_cols1)))
-	# ~ print(('Data columns absent from schema : %s')%(', '.join(strange_cols1)))
-	# ~ print('')
-	# ~ print(('Schema columns present in data : %s')%(', '.join(matching_cols2)))
-	# ~ print(('Schema columns absent from data : %s')%(', '.join(strange_cols2)))
-	
-	
-	# TYPE OF FIELDS ###########################
-	
-	print("")
-	print("[bold blue]TYPES[/bold blue]")
-	
-	for elt in data_columns:
-		if elt in schema_columns:
-			print(elt, is_ok(data[elt], get_type_of_var(mapping, elt)))
+			# TYPES
+			to_type = get_type_of_var(standard, elt)
+			print('%s (%s)'%(elt, to_type))
+			res = is_ok(data[elt], to_type)
+			if res is True:
+				print('[green]Type %s ok[/green]'%to_type)
+			elif res is False:
+				print('[red]Type must be %s[/red]'%to_type)
+			else:
+				msg = res[1]
+				if res[0] is True:
+					print(msg)
+				else:
+					print('[red]%s[/red]'%msg)
 			
-	# PATTERNS ###########################
-	
-	print("")
-	print("[bold blue]PATTERNS[/bold blue]")
-	
-	for elt in data_columns:
-		if elt in schema_columns:
-			patt = get_pattern_of_var(mapping, elt)
+			# PATTERNS
+			patt = get_pattern_of_var(standard, elt)
 			if patt is not None:
-				res = matches_regexp(data[elt], get_pattern_of_var(mapping, elt))
+				res = matches_regexp(data[elt], get_pattern_of_var(standard, elt))
 				if res[0] is False:
-					print('[red]%s : %s do not match pattern %s[/red]'%(elt, ','.join(res[1]), patt))
-			
-	# ENUMS ###########################
-	
-	print("")
-	print("[bold blue]ENUMS[/bold blue]")
-	
-	for elt in data_columns:
-		if elt in schema_columns:
-			print(elt)
-			enums = get_enum_of_var(mapping, elt)
+					print("[red]'%s' do not match pattern %s[/red]"%(', '.join(res[1]), patt))
+				else:
+					print("[green]Pattern %s ok[/green]"%(patt))
+					
+			# ENUMS
+			enums = get_enum_of_var(standard, elt)
 			if enums is not None:
-				print(enums)
 				res = matches_enum(data[elt], enums)
 				if res[0] is False:
-					print("[red]%s : '%s' do not match list of possible values %s[/red]"%(elt, ','.join(res[1]), ','.join(enums)))
+					print("[red]'%s' do not match list of possible values '%s'[/red]"%(', '.join(res[1]), ','.join(enums)))
+		print('')
+		
+	
+	# SCHEMA ###########################
+	
+	print('[bold blue]%s[/bold blue]'%input_mapping)
+	
+	for elt in schema_columns:
+		if elt not in data_columns:
+			print('[red]%s absent in data[/red]'%elt)
+		else:
+			print('[green]%s present in data[/green]'%elt)
+	# ! format, fstring, reach
 
 
 def transform(input_data, input_mapping, output_data = None):
