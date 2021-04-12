@@ -174,7 +174,7 @@ def is_ok(data_var, to_type):
             i_not_valid = [i for i, elt in enumerate(v) if elt is False]
             if len(i_not_valid) > 0:
                 elts_not_valid = [list(data_var)[i] for i in i_not_valid]
-                return (False, "String characters found", elts_not_valid[1:5])
+                return (False, "String character(s) found", elts_not_valid[1:5])
             else:
                 return (True)
         else:
