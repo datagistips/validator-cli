@@ -216,7 +216,7 @@ def is_ok(data_var, to_type):
             else:
                 return (
                     False,
-                    "Integer values not equal to 0 or 1",
+                    "One or more integer values not equal to 0 or 1",
                     unique_values[1:5],
                 )
         elif data_var.dtype == "object":
