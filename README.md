@@ -110,7 +110,7 @@ You can also transform files contained in a directory with `-d`
 
 	python validator-cli.py transform -d my_dir mapping.csv
 
-> Only data with the right structure will be transformed
+> ⚠️ Only data with the right structure will be transformed. Data with wrong structure will be ignored and noticed in the console.
 
 ## Log outputs
 
