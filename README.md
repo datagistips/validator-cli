@@ -74,7 +74,7 @@ See below to see the log output.
 
 You can use `validator` to transform your data to a particular schema. 
 
-> Note transforming your date will only rename the columns, not modify your data cell contents.
+> ℹ️ Note transforming your date will only rename the columns, not modify your data cell contents.
 
 ### 1️⃣ Prepare your mapping file
 
@@ -86,7 +86,7 @@ You can create this file with the [validator GUI assistant](https://github.com/d
 
 The mapping file, in the above animation, is created and named `data-mapping.csv`
 
-> Note that with the GUI Assistant, the data is also transformed at the same time. 
+> ℹ️ Note that with the GUI Assistant, the data is also transformed at the same time. 
 
 It has the following 2-column source-to-destination structure :
 
