@@ -88,6 +88,7 @@ def control(input_data, input_mapping):
 			else:
 				print('[green]%s (%s)[/green]'%(elt, to_type))
 	
+	print('')
 	
 	# PRINT DETAILS ON DATA #######################
 	
@@ -119,14 +120,16 @@ def transform(input_data, input_mapping, output_data = None):
 	data = read_data(input_data)
 	mapping  = pd.read_csv(input_mapping)
 	
-	input_name = search('(.*)\\.(.*)', input_data).group(1)
-	input_extension = search('(.*)\\.(.*)', input_data).group(2)
+	p = pathlib.Path(input_data)
+	input_name = p.parents[0].joinpath(p.stem)
+	input_extension = p.suffix
+	print(input_name, input_extension)
 	
 		
 	# CONTROL ###################################################
 	
 	strange_cols = list()
-	for elt in list(list(mapping['name'])):
+	for elt in list(list(mapping['from'])):
 		if elt not in list(data.columns):
 			if (elt != 'fid' and file_class == "geo") or (file_class == "df") :
 				strange_cols.append(elt)
@@ -140,7 +143,7 @@ def transform(input_data, input_mapping, output_data = None):
 	# PARAMETERS ################################################
 	
 	if output_data is None:
-		output_data = input_name + '-mapped.' + input_extension
+		output_data = str(input_name) + '-mapped' + str(input_extension)
 	else:
 		output_data_path = output_data
 	
@@ -164,13 +167,27 @@ def transform(input_data, input_mapping, output_data = None):
 	# MESSAGES ################################################
 	
 	print(now_string)
-	print(('Input data : %s')%(input_data))
+	MARKDOWN = """
+# Input data : %s
+"""%input_data
+	md = Markdown(MARKDOWN)
+	console.print(md)	
 	print(data.iloc[range(5),])
 	print('\n')
-	print(('Mapping file : %s')%(input_mapping))
+	
+	MARKDOWN = """
+# Mapping file : %s
+"""%input_mapping
+	md = Markdown(MARKDOWN)
+	console.print(md)	
 	print(mapping)
 	print('\n')
-	print(('Mapped data : %s')%(output_data))
+	
+	MARKDOWN = """
+# Output data : %s
+"""%output_data
+	md = Markdown(MARKDOWN)
+	console.print(md)
 	print(data2.iloc[range(5), ])
 
 
@@ -178,6 +195,7 @@ if __name__ == "__main__":
 	
 	now = datetime.now()
 	now_string = now.strftime("%d/%m/%Y %H:%M:%S")
+	
 	
 	# ARGUMENTS ##############################################
 	
@@ -199,6 +217,7 @@ if __name__ == "__main__":
 	# ~ output_data = args.output
 	output_data = None
 	
+	
 	# READ ####################################################
 	
 	# Read mapping
@@ -206,7 +225,9 @@ if __name__ == "__main__":
 		print(("ERROR : mapping file '%s' doesn't exist")%input_mapping)
 		quit()
 		
-	# CONTROL ########################################################"
+	
+	# CONTROL ########################################################
+	
 	if not os.path.exists(input_data):
 		print(("ERROR : file '%s' doesn't exist")%input_data)
 		quit()
@@ -214,7 +235,7 @@ if __name__ == "__main__":
 	
 	# PROCESS ####################################################
 	
-	# Transform
+	# Control & Transform
 	
 	if mode == "control":
 		

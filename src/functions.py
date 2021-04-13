@@ -10,6 +10,7 @@ from rich.console import Console
 from rich.markdown import Markdown
 from ast import literal_eval
 import numpy as np
+import pathlib
 
 def matches_regexp(df_var, regexp):
 	
@@ -306,8 +307,7 @@ def is_ok(data_var, to_type):
 def read_data(input_data):
 	
 	# !! https://docs.python.org/3/howto/regex.html#non-capturing-and-named-groups
-	input_name = search('(.*)\\.(.*)', input_data).group(1)
-	input_extension = search('(.*)\\.(.*)', input_data).group(2)
+	input_extension = pathlib.Path(input_data).suffix
 	
 	if input_extension == 'csv':
 		file_class = "df"
