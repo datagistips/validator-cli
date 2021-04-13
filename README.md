@@ -22,9 +22,11 @@
 
 The data schema file used in validator is a simplified form of [frictionlessdata table schema](https://specs.frictionlessdata.io/table-schema/)
 
-It must be a CSV file. You will find a CSV example file [here](examples/datasets/schema3.csv).
+Create a CSV file named `schema.csv`, for example.
 
-Here is an example of data schema file :
+You will find a CSV example file [here](examples/datasets/schema3.csv).
+
+Here is a content example :
 
 |name       |type     |pattern                    |enum           |
 |-----------|---------|---------------------------|---------------|
