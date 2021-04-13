@@ -12,9 +12,9 @@ from ast import literal_eval
 import numpy as np
 import pathlib
 
+
 def matches_regexp(df_var, regexp):
-	
-	
+
     """
             matches_regexp a column against a regexp
 
@@ -29,13 +29,12 @@ def matches_regexp(df_var, regexp):
     > True
 
     """
-    
+
     i_not_valid = [
         i
         for i, elt in enumerate([bool(match(regexp, str(elt))) for elt in list(df_var)])
         if elt is False
     ]
-    
 
     not_valid = [list(df_var)[i] for i in i_not_valid]
     if len(not_valid) > 0:
@@ -104,8 +103,8 @@ def get_pattern_of_var(standard, the_var):
     Retrieves pattern for a variable in the data standard
     """
 
-    res = standard[standard['name'] == the_var]["pattern"].item()
-    res = None if res == '' or res is np.nan else res
+    res = standard[standard["name"] == the_var]["pattern"].item()
+    res = None if res == "" or res is np.nan else res
     return res
 
 
@@ -115,36 +114,36 @@ def get_type_of_var(standard, the_var):
     'integer'
     """
 
-    res = standard[standard['name'] == the_var]["type"].item()
+    res = standard[standard["name"] == the_var]["type"].item()
     return res
 
 
 def get_enum_of_var(standard, the_var):
-	"""
-	Retrieves enum list in data schema for a variable
-	"""
-	
-	l = standard[standard['name'] == the_var]["enum"].item()
-	l = None if l == '' or l is np.nan else l
-	if l is not None:
-		res = literal_eval(l)
-	else:
-		res = None
-	return res
+    """
+    Retrieves enum list in data schema for a variable
+    """
+
+    l = standard[standard["name"] == the_var]["enum"].item()
+    l = None if l == "" or l is np.nan else l
+    if l is not None:
+        res = literal_eval(l)
+    else:
+        res = None
+    return res
 
 
 def is_ok(data_var, to_type):
     """
-	> data_var
-	0    a
-	1    b
-	2    c
-	Name: str, dtype: object
+    > data_var
+    0    a
+    1    b
+    2    c
+    Name: str, dtype: object
 
-	> to_type
-	character
+    > to_type
+    character
 
-	>> True
+    >> True
     """
 
     # ~ print("----")
@@ -171,24 +170,21 @@ def is_ok(data_var, to_type):
                 elts_not_valid = [list(data_var)[i] for i in i_not_valid]
                 return (False, "String character(s) found", elts_not_valid[1:5])
             else:
-                return (True)
+                return True
         else:
-            return (False)
+            return False
 
     elif to_type in ("float", "number"):
         if data_var.dtype == "float64":
-            return (True)
+            return True
         elif data_var.dtype == "int64":
             return (True, "Integer type found", None)
         elif data_var.dtype == "object":
-            v = [
-                bool(match("(\d+\.?\d+)|(\d+\,?\d+)", str(elt))) for elt in data_var
-            ]
+            v = [bool(match("(\d+\.?\d+)|(\d+\,?\d+)", str(elt))) for elt in data_var]
             i_not_valid = [i for i, elt in enumerate(v) if elt is False]
             if len(i_not_valid) > 0:
                 v = [
-                    bool(match("(\d+\.?\d?)|(\d+\,?\d?)", str(elt)))
-                    for elt in data_var
+                    bool(match("(\d+\.?\d?)|(\d+\,?\d?)", str(elt))) for elt in data_var
                 ]
                 i_not_valid = [i for i, elt in enumerate(v) if elt is False]
                 if len(i_not_valid) > 0:
@@ -199,7 +195,7 @@ def is_ok(data_var, to_type):
             else:
                 return True
         else:
-            return (False)
+            return False
 
     elif to_type == "boolean":
         if data_var.dtype == "bool":
@@ -216,8 +212,8 @@ def is_ok(data_var, to_type):
                 )
         elif data_var.dtype == "object":
 
-            data_var = data_var.astype('str')
-            
+            data_var = data_var.astype("str")
+
             # Boolean valid values
             ref_bool1 = [["0", "1"], ["O"], ["1"]]
             ref_bool2 = [["FALSE", "TRUE"], ["TRUE"], ["FALSE"]]
@@ -237,7 +233,11 @@ def is_ok(data_var, to_type):
                     for elt in unique_values
                 ]
             ):
-                return (False, "Mix of boolean values, for instance TRUE, True, 0 and FALSE at the same time", None)
+                return (
+                    False,
+                    "Mix of boolean values, for instance TRUE, True, 0 and FALSE at the same time",
+                    None,
+                )
             else:
                 return (False, "Wrong values", None)
         else:
@@ -245,31 +245,41 @@ def is_ok(data_var, to_type):
 
     elif to_type == "date":
         if data_var.dtype == "datetime64":
-            return(True)
+            return True
         elif data_var.dtype == "object":
 
             if all([control_date(elt) is not None for elt in data_var]):
                 return True
             elif all([control_date_alt1(elt) is not None for elt in data_var]):
-                return (False, "Day, month and year in wrong order. Follow ISO-8601 : apply 2021-04-01", None)
+                return (
+                    False,
+                    "Day, month and year in wrong order. Follow ISO-8601 : apply 2021-04-01",
+                    None,
+                )
             elif all([control_date_alt2(elt) is not None for elt in data_var]):
-                return (False, "Years too short. Follow ISO-8601 : apply 2021-04-01", None)
+                return (
+                    False,
+                    "Years too short. Follow ISO-8601 : apply 2021-04-01",
+                    None,
+                )
             elif all(
-                [
-                    bool(match("[0-9]+-[0-9]+-[0-9]+", elt)) is True
-                    for elt in data_var
-                ]
+                [bool(match("[0-9]+-[0-9]+-[0-9]+", elt)) is True for elt in data_var]
             ):
                 return (False, "Day(s) not in range", None)
             elif all(
-                [
-                    bool(match("[0-9]+/[0-9]+/[0-9]+", elt)) is True
-                    for elt in data_var
-                ]
+                [bool(match("[0-9]+/[0-9]+/[0-9]+", elt)) is True for elt in data_var]
             ):
-                return (False, "Not well formatted. Follow ISO-8601 : apply 2021-04-01", None)
+                return (
+                    False,
+                    "Not well formatted. Follow ISO-8601 : apply 2021-04-01",
+                    None,
+                )
             else:
-                return (False, "Dates not valid. Follow ISO-8601 : apply 2021-04-01", None)
+                return (
+                    False,
+                    "Dates not valid. Follow ISO-8601 : apply 2021-04-01",
+                    None,
+                )
 
     elif to_type == "datetime":
         if data_var.dtype == "datetime64":
@@ -286,7 +296,7 @@ def is_ok(data_var, to_type):
             else:
                 return True
         else:
-            return (False)
+            return False
 
     elif to_type == "duration":
         if data_var.dtype == "datetime64":
@@ -301,77 +311,85 @@ def is_ok(data_var, to_type):
             else:
                 return True
         else:
-            return (False)
+            return False
 
 
 def read_data(input_data):
-	
-	# !! https://docs.python.org/3/howto/regex.html#non-capturing-and-named-groups
-	input_extension = pathlib.Path(input_data).suffix
-	
-	if input_extension == '.csv':
-		file_class = "df"
-		data = pd.read_csv(input_data, encoding = 'utf-8')
-	else:
-		file_class = "geo"
-		data = gpd.read_file(input_data, encoding = 'utf-8')
-			
-	return(data)
+
+    # !! https://docs.python.org/3/howto/regex.html#non-capturing-and-named-groups
+    input_extension = pathlib.Path(input_data).suffix
+
+    if input_extension == ".csv":
+        file_class = "df"
+        data = pd.read_csv(input_data, encoding="utf-8")
+    else:
+        file_class = "geo"
+        data = gpd.read_file(input_data, encoding="utf-8")
+
+    return data
 
 
 def get_fields_report(data, standard):
-	
-	data_columns = [elt for elt in list(data.columns) if elt != 'geometry']
-	schema_columns = list(standard["name"])
-	
-	d = dict()
-	
-	# FIELD ANALYSIS
-	for elt in data_columns:
-		
-		d[elt] = dict()
-		
-		# PRESENCE ----
-		if elt not in schema_columns:
-			msg = "[red]'%s' absent from schema[/red]"%elt
-			d[elt]['presence']=(False, msg)
-		else:
-			d[elt]['presence']=(True, None)
-			
-			# TYPES ----
-			to_type = get_type_of_var(standard, elt)
-			res = is_ok(data[elt], to_type)
-			if res is True:
-				msg = '[green]Type %s is ok[/green]'%to_type
-				d[elt]['type']=(True, msg)
-			elif res is False:
-				msg = '[red]Type must be %s[/red]'%to_type
-				d[elt]['type']=(False, msg)
-			else:
-				msg = res[1]
-				if res[0] is True:
-					d[elt]['type']=(True, msg)
-				else:
-					msg = '[red]%s[/red]'%msg
-					d[elt]['type']=(False, msg)
-			
-			# PATTERNS ----
-			patt = get_pattern_of_var(standard, elt)
-			if patt is not None:
-				res = matches_regexp(data[elt].astype(str), get_pattern_of_var(standard, elt))
-				if res[0] is False:
-					msg = "[red]'%s' do(es) not match pattern %s[/red]"%(', '.join(res[1]), patt)
-					d[elt]['pattern']=(False, msg)
-				else:
-					msg = "[green]Pattern %s is respected[/green]"%(patt)
-					d[elt]['pattern']=(True, msg)
-					
-			# ENUMS ----
-			enums = get_enum_of_var(standard, elt)
-			if enums is not None:
-				res = matches_enum(data[elt], enums)
-				if res[0] is False:
-					msg = "[red]'%s' do(es) not belong to the possible values '%s'[/red]"%(', '.join(res[1]), ','.join(enums))
-					d[elt]['enums']=(False, msg)
-	
-	return(d)
+
+    data_columns = [elt for elt in list(data.columns) if elt != "geometry"]
+    schema_columns = list(standard["name"])
+
+    d = dict()
+
+    # FIELD ANALYSIS
+    for elt in data_columns:
+
+        d[elt] = dict()
+
+        # PRESENCE ----
+        if elt not in schema_columns:
+            msg = "[red]'%s' absent from schema[/red]" % elt
+            d[elt]["presence"] = (False, msg)
+        else:
+            d[elt]["presence"] = (True, None)
+
+            # TYPES ----
+            to_type = get_type_of_var(standard, elt)
+            res = is_ok(data[elt], to_type)
+            if res is True:
+                msg = "[green]Type %s is ok[/green]" % to_type
+                d[elt]["type"] = (True, msg)
+            elif res is False:
+                msg = "[red]Type must be %s[/red]" % to_type
+                d[elt]["type"] = (False, msg)
+            else:
+                msg = res[1]
+                if res[0] is True:
+                    d[elt]["type"] = (True, msg)
+                else:
+                    msg = "[red]%s[/red]" % msg
+                    d[elt]["type"] = (False, msg)
+
+            # PATTERNS ----
+            patt = get_pattern_of_var(standard, elt)
+            if patt is not None:
+                res = matches_regexp(
+                    data[elt].astype(str), get_pattern_of_var(standard, elt)
+                )
+                if res[0] is False:
+                    msg = "[red]'%s' do(es) not match pattern %s[/red]" % (
+                        ", ".join(res[1]),
+                        patt,
+                    )
+                    d[elt]["pattern"] = (False, msg)
+                else:
+                    msg = "[green]Pattern %s is respected[/green]" % (patt)
+                    d[elt]["pattern"] = (True, msg)
+
+            # ENUMS ----
+            enums = get_enum_of_var(standard, elt)
+            if enums is not None:
+                res = matches_enum(data[elt], enums)
+                if res[0] is False:
+                    msg = (
+                        "[red]'%s' do(es) not belong to the possible values '%s'[/red]"
+                        % (", ".join(res[1]), ",".join(enums))
+                    )
+                    d[elt]["enums"] = (False, msg)
+
+    return d
