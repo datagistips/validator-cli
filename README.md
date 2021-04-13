@@ -77,7 +77,7 @@ You can also transform files contained in a directory with `-d`
 ## Log outputs
 
 ### `control` outputs
-	python validator-cli.py control data.csv schema.csv
+	python validator-cli.py control data3.csv schema3.csv
 
 will output :
 
