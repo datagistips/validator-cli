@@ -21,7 +21,7 @@ console = Console()
 global mapping
 
 
-def control(input_data, input_mapping):
+def process_control(input_data, input_mapping):
 
     # Read Data
     data = read_data(input_data)
@@ -90,7 +90,7 @@ def control(input_data, input_mapping):
         # ~ print('')
 
 
-def transform(input_data, input_mapping, output_data=None):
+def process_transform(input_data, input_mapping, output_data=None):
 
     # READ DATA ###############################################
 
@@ -254,7 +254,7 @@ if __name__ == "__main__":
 
         # Single file treatment -----
         if directory is False:
-            control(
+            process_control(
                 input_data, input_mapping
             )  # we'll create and output data name based on input data file name
 
@@ -263,7 +263,7 @@ if __name__ == "__main__":
 
             l = os.listdir(input_data)
             for elt in l:
-                control(os.path.join(input_data, elt), input_mapping)
+                process_control(os.path.join(input_data, elt), input_mapping)
                 print(
                     "-----------------------------------------------------------------------------------"
                 )
@@ -275,12 +275,12 @@ if __name__ == "__main__":
 
             if output_data is not None:
                 print(now_string)
-                transform(
+                process_transform(
                     input_data, input_mapping, output_data
                 )  # we use the output data file name
             else:
                 print(now_string)
-                transform(
+                process_transform(
                     input_data, input_mapping
                 )  # we'll create and output data name based on input data file name
 
@@ -295,4 +295,4 @@ if __name__ == "__main__":
             print(now_string)
             l = os.listdir(input_data)
             for elt in l:
-                transform(os.path.join(input_data, elt), input_mapping)
+                process_transform(os.path.join(input_data, elt), input_mapping)
