@@ -24,7 +24,7 @@ The data schema file used in validator is a simplified form of [frictionlessdata
 
 Create a CSV file named `schema.csv`, for example.
 
-You will find a CSV example file [here](examples/datasets/schema3.csv).
+You will find a CSV example file [here](examples/datasets/3-example-patterns/schema.csv).
 
 Here is an example content :
 
