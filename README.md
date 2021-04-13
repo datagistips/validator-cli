@@ -18,6 +18,30 @@
 	  -h, --help           show this help message and exit
 	  -d, --directory      process entire directory
 
+## Create your data schema file
+
+Here is an example of data schema file :
+
+|name       |type     |pattern                    |enum           |
+|-----------|---------|---------------------------|---------------|
+|id_site    |integer  |                           |               |
+|pattern    |character|b[0-9]                     |               |
+|list_values|character|                           |["a", "b", "c"]|
+|foo3       |character|                           |               |
+|foo2       |integer  |                           |               |
+|date1      |date     |                           |               |
+|date2      |date     |                           |               |
+|date3      |date     |                           |               |
+|ok1        |boolean  |                           |               |
+|ok2        |boolean  |                           |               |
+|ok3        |boolean  |                           |               |
+|ok4        |boolean  |                           |               |
+|insee1     |character|^([013-9]\d&#124;2[AB1-9])\d{3}$|               |
+|siret1     |character|^\d{14}$                   |               |
+
+
+[You can download an example of data schema here](examples/datasets/standard3.csv)
+
 ## Control your data with `control`
 
 Control a single file against a data standard
