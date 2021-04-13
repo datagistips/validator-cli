@@ -88,6 +88,7 @@ Fill `pattern` column if your values must match a regular expression.
 #### `enum` column
 Fill `enum` if your values must belong to a list of values.
 
+### Control your data against the data schema
 Let's suppose you have a data file named `data.csv` and a data schema named `schema.csv`
 
 Control a single file against your data schema
