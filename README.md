@@ -98,7 +98,7 @@ You can transform your data using the GUI assistant, but you may wish transformi
 
 For this, `transform` will help you.
 
-Now you have created a data mapping file with the GUI assist, you can use it to transform data with `transform`.
+Now you have created a data mapping file with the GUI assistant, you can use the data mapping file to transform data in a script with `transform`.
 
 ### One file
 This line will transform `data.csv` into `data-mapped.csv`, using source-target fields specifications contained in `mapping.csv`
