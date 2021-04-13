@@ -26,7 +26,7 @@ Create a CSV file named `schema.csv`, for example.
 
 You will find a CSV example file [here](examples/datasets/schema3.csv).
 
-Here is a content example :
+Here is an example content :
 
 |name       |type     |pattern                    |enum           |
 |-----------|---------|---------------------------|---------------|
