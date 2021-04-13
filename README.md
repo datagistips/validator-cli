@@ -65,6 +65,9 @@ Control a single file against your data schema
 
 	python validator-cli.py control data.csv schema.csv
 
+- `NOT FOUND` means that the column is not found either in the data file, either on the data schema file.
+- `NOT VALID` means that the pattern or list of values is not respected
+
 Here is an output :
 
 ![](images/log-control.png)
