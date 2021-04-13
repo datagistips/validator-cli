@@ -58,11 +58,13 @@ Fill `enum` if your values must belong to a list of values.
 
 ## Control your data with `control`
 
+Let's suppose you have a data file named `data.csv` and a data schema named `schema.csv`
+
 Control a single file against your data schema
 
 	python validator-cli.py control data.csv schema.csv
 
-Or control an entire directory of files
+You can also control an entire directory of files
 
 	python validator-cli.py control -d my_dir schema.csv
 
@@ -70,19 +72,31 @@ See below to see the log output.
 
 ## Transform your data in :two: steps
 
+You can use `validator` to transform your data to a particular schema. For the moment, you can only rename the columns.
+
 ### 1️⃣ Prepare your mapping file
 
-For this, you can use the [validator GUI assistant](https://github.com/datagistips/validator)
+The mapping file specifies the `source` fields and the `target` fields for the renaming of the data. 
+
+You can create this file with the [validator GUI assistant](https://github.com/datagistips/validator)
 
 ![](https://github.com/datagistips/validator/raw/main/images/demo.gif)
 
-The mapping file, named in the above animation `data-mapping.csv` specifies the source fields and the target fields for the renaming of the data. 
+The mapping file, in the above animation, is created and named `data-mapping.csv`
+
+> Note that with the GUI Assistant, the data is also transformed at the same time. 
 
 It has the following 2-column source-to-destination structure :
 
 ![](https://github.com/datagistips/validator/raw/main/images/mapping.png)
 
 ### :two: Transform your data with `transform`
+
+You can transform your data using the GUI assistant, but you may wish transforming your data programmatically.
+
+For this, `transform` will help you.
+
+Now you have created a data mapping file with the GUI assist, you can use it to transform data with `transform`.
 
 ### One file
 This line will transform `data.csv` into `data-mapped.csv`, using source-target fields specifications contained in `mapping.csv`
