@@ -72,6 +72,7 @@ Here is an output :
 
 ![](images/log-control.png)
 
+### Control all files in a directory
 You can also control an entire directory of files
 
 	python validator-cli.py control -d my_dir schema.csv
