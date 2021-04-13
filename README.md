@@ -107,7 +107,7 @@ You can also control an entire directory of files
 
 	python validator-cli.py control --directory my_dir schema.csv
 
-## Transform your data in :two: steps
+## Transform your data with `transform`
 
 You can use `validator` to transform your data to a particular schema. 
 
