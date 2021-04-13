@@ -45,7 +45,11 @@
 	  --outputdata TEXT
 	  --help                        Show this message and exit.
 
-## Create your data schema file
+
+
+## Control your data with `control`
+
+### Create your data schema file
 
 The data schema file used in validator is a simplified form of [frictionlessdata table schema](https://specs.frictionlessdata.io/table-schema/)
 
@@ -66,7 +70,7 @@ Here is an example content :
 |city_code     |character|^([013-9]\d&#124;2[AB1-9])\d{3}$|               |
 |siret     |character|^\d{14}$                   |               |
 
-### `type`
+#### `type` column
 Valid types are :
 
 - `string`
@@ -78,13 +82,11 @@ Valid types are :
 - `boolean`
 
 
-### `pattern`
+#### `pattern` column 
 Fill `pattern` column if your values must match a regular expression.
 
-### `enum`
+#### `enum` column
 Fill `enum` if your values must belong to a list of values.
-
-## Control your data with `control`
 
 Let's suppose you have a data file named `data.csv` and a data schema named `schema.csv`
 
