@@ -29,7 +29,7 @@ def matches_regexp(df_var, regexp):
     > True
 
     """
-
+    
     i_not_valid = [
         i
         for i, elt in enumerate([bool(match(regexp, elt)) for elt in list(df_var)])
@@ -105,7 +105,7 @@ def get_pattern_of_var(standard, the_var):
     """
 
     res = standard[standard['name'] == the_var]["pattern"].item()
-    res = None if res == '' else res
+    res = None if res == '' or res is np.nan else res
     return res
 
 
@@ -125,7 +125,7 @@ def get_enum_of_var(standard, the_var):
 	"""
 	
 	l = standard[standard['name'] == the_var]["enum"].item()
-	l = None if l == '' else l
+	l = None if l == '' or l is np.nan else l
 	if l is not None:
 		res = literal_eval(l)
 	else:
@@ -321,7 +321,7 @@ def read_data(input_data):
 
 def get_fields_report(data, standard):
 	
-	data_columns = list(data.columns)
+	data_columns = [elt for elt in list(data.columns) if elt != 'geometry']
 	schema_columns = list(standard["name"])
 	
 	d = dict()
