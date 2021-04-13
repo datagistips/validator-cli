@@ -19,16 +19,16 @@ data = pd.DataFrame(data = {
 
 })
 
-data.to_csv('data3.csv', index = False)
+data.to_csv('examples/datasets/data3.csv', index = False)
 
 standard = pd.DataFrame(data = {
 'name':['id_site', 'pattern', 'list_values', 'foo3', 'foo2', 'date1', 'date2', 'date3', 'ok1', 'ok2', 'ok3', 'ok4', 'insee1', 'siret1'], 
-'type':['integer', 'character', 'character', 'character', 'integer', 'date', 'date', 'date', 'boolean','boolean','boolean','boolean', 'character', 'character'], 
+'type':['integer', 'string', 'string', 'string', 'integer', 'date', 'date', 'date', 'boolean','boolean','boolean','boolean', 'string', 'string'], 
 'pattern':['', 'b[0-9]', '', '', '', '', '', '','','','','','^([013-9]\d|2[AB1-9])\d{3}$', '^\d{14}$'],
 'enum':['','','["a", "b", "c"]', '', '', '', '', '','','','','','','']
 })
 
 standard.astype({'name': 'object', 'type':'object', 'pattern':'object', 'enum':'object'}).dtypes
 
-standard.to_csv('standard3.csv', index = False)
+standard.to_csv('examples/datasets/standard3.csv', index = False)
 
