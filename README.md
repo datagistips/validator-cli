@@ -72,7 +72,9 @@ See below to see the log output.
 
 ## Transform your data in :two: steps
 
-You can use `validator` to transform your data to a particular schema. For the moment, you can only rename the columns.
+You can use `validator` to transform your data to a particular schema. 
+
+> Note transforming your date will only rename the columns, not modify your data cell contents.
 
 ### 1️⃣ Prepare your mapping file
 
