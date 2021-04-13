@@ -62,7 +62,7 @@ Control a single file against your data schema
 
 	python validator-cli.py control data.csv schema.csv
 
-Control an entire directory of files
+Or control an entire directory of files
 
 	python validator-cli.py control -d my_dir schema.csv
 
