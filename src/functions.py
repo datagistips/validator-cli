@@ -32,7 +32,7 @@ def matches_regexp(df_var, regexp):
     
     i_not_valid = [
         i
-        for i, elt in enumerate([bool(match(regexp, elt)) for elt in list(df_var)])
+        for i, elt in enumerate([bool(match(regexp, str(elt))) for elt in list(df_var)])
         if elt is False
     ]
     
@@ -358,7 +358,7 @@ def get_fields_report(data, standard):
 			# PATTERNS ----
 			patt = get_pattern_of_var(standard, elt)
 			if patt is not None:
-				res = matches_regexp(data[elt], get_pattern_of_var(standard, elt))
+				res = matches_regexp(data[elt].astype(str), get_pattern_of_var(standard, elt))
 				if res[0] is False:
 					msg = "[red]'%s' do(es) not match pattern %s[/red]"%(', '.join(res[1]), patt)
 					d[elt]['pattern']=(False, msg)
