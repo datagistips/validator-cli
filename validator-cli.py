@@ -74,13 +74,13 @@ def control(input_data, input_mapping):
 		if key not in schema_columns:
 			print('[red]%s *ABSENT*[/red]'%key)
 		else:
-			to_type = get_type_of_var(standard, key)
+			from_type = data[key].dtype
 			if(all([elt[0] is True for elt in value.values()])):
-				print('[green]%s (%s)[/green]'%(key, to_type))
+				print('[green]%s (%s)[/green]'%(key, from_type))
 			else:
 				for key2, value2 in value.items():
 					if value2[0] is False:
-						print('[red]%s (%s) : %s[/red]'%(key, to_type, value2[1]))
+						print('[red]%s (%s) : %s[/red]'%(key, from_type, value2[1]))
 		# ~ print('')
 
 
