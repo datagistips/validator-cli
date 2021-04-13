@@ -36,11 +36,11 @@ Here is an example of data schema file :
 
 ## Control your data with `control`
 
-Control a single file against a data standard
+Control a single file against your data schema
 
 	python validator-cli.py control data.csv schema.csv
 
-Control a directory of files against a data standard
+Control an entire directory of files
 
 	python validator-cli.py control -d my_dir schema.csv
 
