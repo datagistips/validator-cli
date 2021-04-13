@@ -65,11 +65,13 @@ Control a single file against your data schema
 
 	python validator-cli.py control data.csv schema.csv
 
+Here is an output :
+
+![](images/log-control.png)
+
 You can also control an entire directory of files
 
 	python validator-cli.py control -d my_dir schema.csv
-
-See below to see the log output.
 
 ## Transform your data in :two: steps
 
@@ -106,30 +108,14 @@ This line will transform `data.csv` into `data-mapped.csv`, using source-target 
 
 	python validator-cli.py transform data.csv mapping.csv
 
+Here is an output :
+
+![](images/log-transform.png)
+
+
 ### One directory
 You can also transform files contained in a directory with `-d`
 
 	python validator-cli.py transform -d my_dir mapping.csv
 
 > ⚠️ Only data with the right structure will be transformed. Data with wrong structure will be ignored and noticed in the console.
-
-## Log outputs
-
-### `control` outputs
-	python validator-cli.py control data3.csv schema3.csv
-
-will output :
-
-![](images/log-control.png)
-
-### `transform` outputs
-	python validator-cli.py transform data.csv mapping.csv
-
-will output :
-
-![](images/log-transform.png)
-
-### Logs
-You can redirect print messages to a log file like this :
-
-	python validator-cli.py control data.csv schema.csv > log.txt
