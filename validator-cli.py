@@ -5,6 +5,7 @@ import pandas as pd
 from re import match, search
 import os
 import sys
+import csv
 import argparse
 from datetime import datetime
 from rich import print
@@ -94,7 +95,11 @@ def transform(input_data, input_mapping, output_data = None):
 	p = pathlib.Path(input_data)
 	input_name = p.parents[0].joinpath(p.stem)
 	input_extension = p.suffix
-	print(input_name, input_extension)
+	
+	if input_extension in ('shp', 'gpkg'):
+		file_class = 'df'
+	else:
+		file_class = 'geo'
 	
 		
 	# CONTROL ###################################################
@@ -127,11 +132,11 @@ def transform(input_data, input_mapping, output_data = None):
 	
 	# EXPORT #################################
 	
-	if input_extension == "csv":
+	if input_extension == ".csv":
 		data2.to_csv(output_data, encoding = "utf-8", index = False, quoting=csv.QUOTE_ALL)
-	elif input_extension == 'gpkg':
+	elif input_extension == '.gpkg':
 		data2.to_file(output_data, driver="GPKG", encoding = "utf-8", index = False)
-	elif input_extension == 'shp':
+	elif input_extension == '.shp':
 		data2.to_file(output_data, driver="ESRI Shapefile", encoding = "utf-8", index = False)
 	
 	
