@@ -43,12 +43,13 @@ Here is an example content :
 Valid types are :
 
 - `string`
+- `integer`
+- `number`
 - `date`
 - `datetime`
 - `duration`
 - `boolean`
-- `number`
-- `integer`
+
 
 ### `pattern`
 Fill `pattern` column if your values must match a regular expression.
