@@ -81,54 +81,14 @@ You can also transform files contained in a directory with `-d`
 
 will output :
 
-	07/04/2021 19:05:23
-	[KO] Data non valid
-	
-	Input data : data.csv
-	Data schema : standard.csv
-	
-	Data columns : fid, id, lib, date, heure, ok, id_site
-	Schema columns : id_site, date_maj, nb_sites, is_ok, libelle
-	
-	Data columns present in schema : id_site
-	Data columns absent from schema : fid, id, lib, date, heure, ok
-	
-	Schema columns present in data : id_site
-	Schema columns absent from data : date_maj, nb_sites, is_ok, libelle
+![](images/log-control.png)
 
 ### `transform` outputs
 	python validator-cli.py transform data.csv mapping.csv
 
 will output :
 
-	07/04/2021 19:05:23
-	Input data : data.csv
-	   fid  id        lib        date                heure     ok  id_site
-	0    1  11   à la mer  2021/03/02                  NaN   vrai      100
-	1    2  10  printemps  2021/03/09  2021/03/09 00:00:00  false      100
-	2    3  20        été         NaN                  NaN  false      100
-	3    4  20        été         NaN                  NaN  false      100
-	4    5  10         BD  2021/03/09  2021/03/09 00:00:00  false      100
-	
-	
-	Mapping file : mapping.csv
-	      from        to
-	0  id_site   id_site
-	1       ok       _ok
-	2      lib      _lib
-	3      fid      _fid
-	4     date  date_maj
-	5    heure    _heure
-	6       id       _id
-	
-	
-	Mapped data : data-mapped.csv
-	   _fid  _id       _lib    date_maj               _heure    _ok  id_site
-	0     1   11   à la mer  2021/03/02                  NaN   vrai      100
-	1     2   10  printemps  2021/03/09  2021/03/09 00:00:00  false      100
-	2     3   20        été         NaN                  NaN  false      100
-	3     4   20        été         NaN                  NaN  false      100
-	4     5   10         BD  2021/03/09  2021/03/09 00:00:00  false      100
+![](images/log-transform.png)
 
 ### Logs
 You can redirect print messages to a log file like this :
