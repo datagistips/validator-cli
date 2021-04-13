@@ -288,7 +288,7 @@ def is_ok(data_var, to_type):
         else:
             return (False)
 
-    elif to_type == "time":
+    elif to_type == "duration":
         if data_var.dtype == "datetime64":
             return True
         elif data_var.dtype == "object":

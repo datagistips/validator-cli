@@ -33,6 +33,22 @@ Here is an example of data schema file :
 |city_code     |character|^([013-9]\d&#124;2[AB1-9])\d{3}$|               |
 |siret     |character|^\d{14}$                   |               |
 
+### `type`
+Valid types are :
+
+- `string` or `text` or `character`
+- `date`
+- `datetime`
+- `duration`
+- `boolean`
+- `number`
+- `integer`
+
+### `pattern`
+Use `pattern` if your values must match a regular expression.
+
+### `enum`
+Use `enum` if your values must belong to a list of values.
 
 ## Control your data with `control`
 
