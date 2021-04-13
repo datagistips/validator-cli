@@ -309,7 +309,7 @@ def read_data(input_data):
 	# !! https://docs.python.org/3/howto/regex.html#non-capturing-and-named-groups
 	input_extension = pathlib.Path(input_data).suffix
 	
-	if input_extension == 'csv':
+	if input_extension == '.csv':
 		file_class = "df"
 		data = pd.read_csv(input_data, encoding = 'utf-8')
 	else:

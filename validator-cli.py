@@ -111,8 +111,14 @@ def transform(input_data, input_mapping, output_data = None):
 				strange_cols.append(elt)
 				
 	if len(strange_cols) > 0:
-		print(('> Input data : %s')%(input_data))
-		print('WARNING : Wrong structure. No mapping done. Odd columns : %s'%(', '.join(strange_cols)))
+		MARKDOWN = """
+# Input data : %s
+"""%input_data
+		md = Markdown(MARKDOWN)
+		console.print(md)
+		# ~ print(('> Input data : %s')%(input_data))
+		print('[red]Wrong structure. No mapping done. Source mapping columns %s not found in data[/red]'%(', '.join(strange_cols)))
+		print('')
 		return()
 	
 	
@@ -142,14 +148,13 @@ def transform(input_data, input_mapping, output_data = None):
 	
 	# MESSAGES ################################################
 	
-	print(now_string)
 	MARKDOWN = """
 # Input data : %s
 """%input_data
 	md = Markdown(MARKDOWN)
 	console.print(md)	
 	print(data.iloc[range(5),])
-	print('\n')
+	print('')
 	
 	MARKDOWN = """
 # Mapping file : %s
@@ -157,7 +162,7 @@ def transform(input_data, input_mapping, output_data = None):
 	md = Markdown(MARKDOWN)
 	console.print(md)	
 	print(mapping)
-	print('\n')
+	print('')
 	
 	MARKDOWN = """
 # Output data : %s
@@ -165,6 +170,7 @@ def transform(input_data, input_mapping, output_data = None):
 	md = Markdown(MARKDOWN)
 	console.print(md)
 	print(data2.iloc[range(5), ])
+	print('')
 
 
 if __name__ == "__main__":
@@ -233,8 +239,10 @@ if __name__ == "__main__":
 		if directory is False :
 			
 			if output_data is not None:
+				print(now_string)
 				transform(input_data, input_mapping, output_data) # we use the output data file name
 			else:
+				print(now_string)
 				transform(input_data, input_mapping) # we'll create and output data name based on input data file name
 		
 		# Directory treatment -----
@@ -242,8 +250,8 @@ if __name__ == "__main__":
 			
 			if output_data is not None:
 				print("Output file will not be taken into account when renaming batches of data")
-				
+			
+			print(now_string)
 			l = os.listdir(input_data)
 			for elt in l:
 				transform(os.path.join(input_data, elt), input_mapping)
-				print('-----------------------------------------------------------------------------------')
