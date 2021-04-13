@@ -38,11 +38,13 @@ Here is an example of data schema file :
 
 Control a single file against a data standard
 
-	python validator-cli.py control data.csv standard.csv
+	python validator-cli.py control data.csv schema.csv
 
 Control a directory of files against a data standard
 
-	python validator-cli.py control -d my_dir standard.csv
+	python validator-cli.py control -d my_dir schema.csv
+
+See below to see the log output.
 
 ## Transform your data in :two: steps
 
@@ -75,7 +77,7 @@ You can also transform files contained in a directory with `-d`
 ## Log outputs
 
 ### `control` outputs
-	python validator-cli.py control data.csv standard.csv
+	python validator-cli.py control data.csv schema.csv
 
 will output :
 
