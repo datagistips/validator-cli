@@ -75,7 +75,7 @@ Here is an output :
 ### Control all files in a directory
 You can also control an entire directory of files
 
-	python validator-cli.py control -d my_dir schema.csv
+	python validator-cli.py control --directory my_dir schema.csv
 
 ## Transform your data in :two: steps
 
@@ -117,7 +117,7 @@ Here is an output :
 
 
 ### Transform all files in a directory
-You can also transform files contained in a directory with `-d`
+You can also transform files contained in a directory with `--directory`
 
 	python validator-cli.py transform -d my_dir mapping.csv
 
