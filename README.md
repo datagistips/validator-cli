@@ -32,29 +32,27 @@ Control a directory of files against a data standard
 
 ### 1️⃣ Prepare your mapping file
 
-For this, you can use the output of `control` to create it manually.
-
-Or you can use the [validator GUI assistant](https://github.com/datagistips/validator).
+For this, you can use the [validator GUI assistant](https://github.com/datagistips/validator)
 
 ![](https://github.com/datagistips/validator/raw/main/images/demo.gif)
 
 The mapping file, named in the above animation `data-mapping.csv` specifies the source fields and the target fields for the renaming of the data. 
 
-It has the following structure :
+It has the following 2-column source-to-destination structure :
 
 ![](https://github.com/datagistips/validator/raw/main/images/mapping.png)
 
 ### :two: Transform your data with `transform`
 
 ### One file
-This line will transform `my_data.csv` into `my_data-mapped.csv`, using source-target fields specifications contained in `mapping.csv` file :
+This line will transform `data.csv` into `data-mapped.csv`, using source-target fields specifications contained in `mapping.csv`
 
-	python validator-cli.py transform data.csv -m mapping.csv
+	python validator-cli.py transform data.csv mapping.csv
 
 ### One directory
 You can also transform files contained in a directory with `-d`
 
-	python validator-cli.py transform -d my_dir -m mapping.csv
+	python validator-cli.py transform -d my_dir mapping.csv
 
 > Only data with the right structure will be transformed
 
