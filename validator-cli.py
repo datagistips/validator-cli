@@ -202,8 +202,15 @@ def process_transform(input_data, input_mapping, output_data=None):
 
 @app.command()
 def control(inputfile: str, schemafile:str, directory: bool = False):
-	
-    # Check existence
+    """
+inputfile : input file path or directory (depends if you specified --directory)
+
+schemafile : data schema file path
+
+--directory : type --directory if you want to control an entire directory	
+    """
+    
+	# Check existence
     if not os.path.exists(schemafile):
         print(("ERROR : mapping file '%s' doesn't exist") % schemafile)
         quit()
@@ -228,6 +235,13 @@ def control(inputfile: str, schemafile:str, directory: bool = False):
 
 @app.command()
 def transform(inputfile: str, mappingfile:str, directory: bool = False, outputdata: Optional[str] = None):
+	"""
+inputfile : input file path or directory (depends if you specified --directory)
+
+mappingfile : data mapping file path. The data mapping file specifies source field and target field names.
+
+--directory : type --directory if you want to control an entire directory	
+    """
 	
 	# Single file treatment -----
 	if directory is False:

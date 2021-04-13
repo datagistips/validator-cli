@@ -3,20 +3,47 @@
 `validator-cli` is a command line interface to [validator](https://github.com/datagistips/validator). It enables you to :
 
 - **control** your data (against a data schema)
-- **transform** it (against a mapping file)
 
 >
 
-	usage: validator-cli.py [-h] [-d] {control,transform} input schema
+	Usage: validator-cli.py control [OPTIONS] INPUTFILE SCHEMAFILE
 	
-	positional arguments:
-	  {control,transform}  'control' data against a data schema or 'transform' data thanks to a mapping file
-	  input                input file or directory (depends if you specified -d or not)
-	  schema               data schema file path (if 'control' mode) or mapping file (if 'transform' mode)
+	  inputfile : input file path or directory (depends if you specified
+	  --directory)
 	
-	optional arguments:
-	  -h, --help           show this help message and exit
-	  -d, --directory      process entire directory
+	  schemafile : data schema file path, with field definitions, types, patterns and enum lists
+	
+	  --directory : type --directory if you want to control an entire directory
+	
+	Arguments:
+	  INPUTFILE   [required]
+	  SCHEMAFILE  [required]
+	
+	Options:
+	  --directory / --no-directory  [default: False]
+	  --help                        Show this message and exit.
+
+- **transform** it (against a mapping file)
+>
+
+	Usage: validator-cli.py transform [OPTIONS] INPUTFILE MAPPINGFILE
+
+	  inputfile : input file path or directory (depends if you specified
+	  --directory)
+	
+	  mappingfile : data mapping file path. The data mapping file specifies
+	  source field and target field names.
+
+  	  --directory : type --directory if you want to control an entire directory
+	
+	Arguments:
+	  INPUTFILE    [required]
+	  MAPPINGFILE  [required]
+	
+	Options:
+	  --directory / --no-directory  [default: False]
+	  --outputdata TEXT
+	  --help                        Show this message and exit.
 
 ## Create your data schema file
 
