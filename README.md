@@ -32,7 +32,7 @@ Here is an example content :
 |-----------|---------|---------------------------|---------------|
 |id_site    |integer  |                           |               |
 |name       |character|                           |               |
-|weight       |float  |                           |               |
+|weight       |number  |                           |               |
 |date      |date     |                           |               |
 |ok        |boolean  |                           |               |
 |values|character|                           |["a", "b", "c"]|
@@ -42,7 +42,7 @@ Here is an example content :
 ### `type`
 Valid types are :
 
-- `string` or `text` or `character`
+- `string`
 - `date`
 - `datetime`
 - `duration`
