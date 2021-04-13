@@ -13,9 +13,11 @@ from rich.console import Console
 from rich.markdown import Markdown
 from ast import literal_eval
 import numpy as np
-
+import typer
+from typing import Optional
 from src.functions import *
 
+app = typer.Typer()
 console = Console()
 
 global mapping
@@ -196,103 +198,104 @@ def process_transform(input_data, input_mapping, output_data=None):
         ]
     )
     print("")
+    
+
+@app.command()
+def control(inputfile: str, schemafile:str, directory: bool = False):
+	
+    # Check existence
+    if not os.path.exists(schemafile):
+        print(("ERROR : mapping file '%s' doesn't exist") % schemafile)
+        quit()
+
+    if not os.path.exists(inputfile):
+        print(("ERROR : file '%s' doesn't exist") % inputfile)
+        quit()
+
+	# Single file treatment -----
+    if directory is False:
+	    process_control(
+		    inputfile, schemafile
+	    )  # we'll create and output data name based on input data file name
+
+	# Directory treatment -----
+    else :
+	    inputdir = inputfile
+	    l = os.listdir(inputdir)
+	    for elt in l:
+		    process_control(os.path.join(inputdir, elt), schemafile)
+
+
+@app.command()
+def transform(inputfile: str, mappingfile:str, directory: bool = False, outputdata: Optional[str] = None):
+	
+	# Single file treatment -----
+	if directory is False:
+
+		if outputdata is not None:
+			print(now_string)
+			process_transform(
+				inputfile, mappingfile, outputdata
+			)  # we use the output data file name
+		else:
+			print(now_string)
+			process_transform(
+				inputfile, mappingfile
+			)  # we'll create and output data name based on input data file name
+
+	# Directory treatment -----
+	else :
+		inputdir = inputfile
+
+		if outputdata is not None:
+			print(
+				"Output file will not be taken into account when renaming batches of data"
+			)
+
+		print(now_string)
+		l = os.listdir(inputfile)
+		for elt in l:
+			process_transform(os.path.join(inputfile, elt), mappingfile)
 
 
 if __name__ == "__main__":
 
     now = datetime.now()
     now_string = now.strftime("%d/%m/%Y %H:%M:%S")
+    
+    app()
 
     # ARGUMENTS ##############################################
 
-    parser = argparse.ArgumentParser()
+    # ~ parser = argparse.ArgumentParser()
 
-    parser.add_argument(
-        "mode",
-        choices=["control", "transform"],
-        help="'control' data against a data schema or 'transform' data thanks to a mapping file",
-    )
-    parser.add_argument(
-        "-d", "--directory", help="process entire directory", action="store_true"
-    )
-    parser.add_argument(
-        "input", help="input file or directory (depends if you specified -d or not)"
-    )
-    parser.add_argument(
-        "schema",
-        help="data schema file path (if 'control' mode) or mapping file (if 'transform' mode)",
-    )
+    # ~ parser.add_argument(
+        # ~ "mode",
+        # ~ choices=["control", "transform"],
+        # ~ help="'control' data against a data schema or 'transform' data thanks to a mapping file",
+    # ~ )
+    # ~ parser.add_argument(
+        # ~ "-d", "--directory", help="process entire directory", action="store_true"
+    # ~ )
+    # ~ parser.add_argument(
+        # ~ "input", help="input file or directory (depends if you specified -d or not)"
+    # ~ )
+    # ~ parser.add_argument(
+        # ~ "schema",
+        # ~ help="data schema file path (if 'control' mode) or mapping file (if 'transform' mode)",
+    # ~ )
     # ~ parser.add_argument("-o", "--output", help="Output file (Optional and active if in single file mode, not directory mode)")
 
-    args = parser.parse_args()
+    # ~ args = parser.parse_args()
 
-    mode = args.mode
-    directory = args.directory
-    input_data = args.input
-    input_mapping = args.schema
+    # ~ mode = args.mode
+    # ~ directory = args.directory
+    # ~ input_data = inputfile
+    # ~ input_mapping = schemafile
     # ~ output_data = args.output
-    output_data = None
+    # ~ output_data = None
 
     # READ ####################################################
 
-    # Read mapping
-    if not os.path.exists(input_mapping):
-        print(("ERROR : mapping file '%s' doesn't exist") % input_mapping)
-        quit()
-
-    # CONTROL ########################################################
-
-    if not os.path.exists(input_data):
-        print(("ERROR : file '%s' doesn't exist") % input_data)
-        quit()
-
-    # PROCESS ####################################################
-
-    # Control & Transform
-
-    if mode == "control":
-
-        # Single file treatment -----
-        if directory is False:
-            process_control(
-                input_data, input_mapping
-            )  # we'll create and output data name based on input data file name
-
-        # Directory treatment -----
-        elif directory is True:
-
-            l = os.listdir(input_data)
-            for elt in l:
-                process_control(os.path.join(input_data, elt), input_mapping)
-                print(
-                    "-----------------------------------------------------------------------------------"
-                )
-
-    elif mode == "transform":
-
-        # Single file treatment -----
-        if directory is False:
-
-            if output_data is not None:
-                print(now_string)
-                process_transform(
-                    input_data, input_mapping, output_data
-                )  # we use the output data file name
-            else:
-                print(now_string)
-                process_transform(
-                    input_data, input_mapping
-                )  # we'll create and output data name based on input data file name
-
-        # Directory treatment -----
-        elif directory is True:
-
-            if output_data is not None:
-                print(
-                    "Output file will not be taken into account when renaming batches of data"
-                )
-
-            print(now_string)
-            l = os.listdir(input_data)
-            for elt in l:
-                process_transform(os.path.join(input_data, elt), input_mapping)
+    
+    
