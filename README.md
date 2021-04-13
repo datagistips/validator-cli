@@ -20,6 +20,10 @@
 
 ## Create your data schema file
 
+The data schema file used in validator is a simplified form of [frictionlessdata table schema](https://specs.frictionlessdata.io/table-schema/)
+
+It must be a CSV file. You will find a CSV example file [here](examples/datasets/schema3.csv).
+
 Here is an example of data schema file :
 
 |name       |type     |pattern                    |enum           |
