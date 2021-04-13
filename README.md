@@ -107,7 +107,6 @@ For this, `transform` will help you.
 
 Now you have created a data mapping file with the GUI assistant, you can use the data mapping file to transform data in a script with `transform`.
 
-### One file
 This line will transform `data.csv` into `data-mapped.csv`, using source-target fields specifications contained in `mapping.csv`
 
 	python validator-cli.py transform data.csv mapping.csv
@@ -117,7 +116,7 @@ Here is an output :
 ![](images/log-transform.png)
 
 
-### One directory
+### Transform all files in a directory
 You can also transform files contained in a directory with `-d`
 
 	python validator-cli.py transform -d my_dir mapping.csv
