@@ -54,6 +54,7 @@ def control(input_data, input_mapping):
 	
 	standard.astype({'name': 'object', 'type':'object', 'pattern':'object', 'enum':'object'}).dtypes
 	
+	
 	# HEADER ###########################
 	
 	print('Time : %s'%now_string)
@@ -77,11 +78,11 @@ def control(input_data, input_mapping):
 	
 	
 	for elt in schema_columns:
+		to_type = get_type_of_var(standard, elt)
 		if elt not in d.keys():
-			print('[red]%s *ABSENT*[/red]'%elt)
+			print('[red]%s (%s) *ABSENT*[/red]'%(elt, to_type))
 		else:
 			d2 = d[elt]
-			to_type = get_type_of_var(standard, elt)
 			if any([elt[0] is False for elt in d2.values()]):
 				print('[red]%s (%s)[/red]'%(elt, to_type))
 			else:
