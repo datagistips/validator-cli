@@ -51,10 +51,10 @@ Valid types are :
 - `integer`
 
 ### `pattern`
-Use `pattern` if your values must match a regular expression.
+Fill `pattern` column if your values must match a regular expression.
 
 ### `enum`
-Use `enum` if your values must belong to a list of values.
+Fill `enum` if your values must belong to a list of values.
 
 ## Control your data with `control`
 
