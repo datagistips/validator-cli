@@ -115,4 +115,4 @@ will output :
 ### Logs
 You can redirect print messages to a log file like this :
 
-	python validator-cli.py control data.csv standard.csv > log.txt
+	python validator-cli.py control data.csv schema.csv > log.txt
